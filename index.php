@@ -1,27 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
-</head>
-<header>
-    <div class="navigation">
-        <nav>
-            <ul>
-                <li class="navlink">
-                    <a href="http://localhost">Home</a>
-                </li>
-                <li class="navlink">
-                    <a href="testl.html">Home2</a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-</header>
+<?php
+require_once "header.php";
+?>
 <body>
 <div class="container">
     <div class="two-columns">
@@ -71,4 +52,5 @@
     </div>
 </div>
 </body>
+<?php require_once "footer.php"; ?>
 </html>
