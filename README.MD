@@ -3,3 +3,5 @@
 2. Clone de repo en open het in pycharm
 3. Misschien niet nodig maar voer `pip install flask` uit in het project
 4. Voer `flask run` uit in het project
+
+Het project is nu gestart op: http://127.0.0.1:5000
