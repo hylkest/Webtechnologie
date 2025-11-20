@@ -9,3 +9,4 @@ Het project is nu gestart op: http://127.0.0.1:5000
 ## INFO ##
 - In de templates map, staat alle front end html pagina's
 - In app.py staat verwerking van de backend
+- In de static map staan alle assets. Dus css/js etc. Deze map (static) mag niet hernoemd worden
