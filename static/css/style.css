@@ -1,0 +1,112 @@
+/* Header */
+header {
+    background: grey;
+    margin-top: 0;
+
+    .navigation {
+        ul {
+            padding: 20px;
+            margin-top: 0;
+            display: flex;
+            list-style-type: none;
+
+            .navlink {
+                padding-left: 10px;
+                padding-right: 10px;
+
+                a {
+                    text-decoration: none;
+                    color: white;
+                }
+            }
+        }
+    }
+}
+
+/* BODY */
+body {
+    margin: 0;
+    font-family: "Roboto", sans-serif;
+}
+
+/* Containers */
+.container {
+    padding: 0 20px 0 20px;
+}
+
+.full-width {
+    background: grey;
+    margin-top: 10px;
+    min-height: 600px;
+    padding: 20px 0;
+}
+
+/* 2 Columns block */
+.one-column {
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+
+
+    .column {
+        margin: 10px 50px;
+        min-width: 50%;
+        background: white;
+        border-radius: 20px;
+        min-height: 100px;
+
+        .textblock {
+            padding: 0 20px;
+            color: black;
+        }
+    }
+}
+
+.two-columns {
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+
+    .column {
+        margin: 0 50px;
+        min-width: 25%;
+        background: grey;
+        border-radius: 20px;
+        min-height: 200px;
+
+        .title {
+            display: flex;
+            justify-content: center;
+            color: white;
+        }
+
+        .textblock {
+            padding: 0 20px;
+            color: white;
+        }
+    }
+}
+
+/* Buttons */
+.btn {
+    text-decoration: none;
+    color: white;
+    background: blue;
+    padding: 10px;
+    border-radius: 15px;
+}
+
+.btn-trans {
+    background: transparent;
+    border-radius: 15px;
+    border: 2px solid blue;
+    color: blue;
+    padding: 10px;
+    text-decoration: none;
+}
+
+.btn-trans:hover {
+    color: white;
+    background: blue;
+    transition: 0.3s;
+}
