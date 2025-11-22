@@ -1,4 +1,4 @@
-# 🧩 TECHNICAL_DESIGN – GiftChain + ProofOfCreator
+# 🧩 TECHNICAL_DESIGN – GiftChain + ProofOfCreator(InstaChain)
 
 Een technisch ontwerp voor de Web3-geïnspireerde webapplicatie **GiftChain + ProofOfCreator**.  
 De app gebruikt **Flask + SQLite + Bootstrap** en simuleert Web3-mechanieken zoals hashes, blocks, immutability en chain-integrity.
