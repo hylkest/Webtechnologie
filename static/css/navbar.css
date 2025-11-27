@@ -1,0 +1,14 @@
+.navbar-bottom {
+    background: grey;
+
+    ul {
+        list-style-type: none;
+        display: flex;
+        justify-content: center;
+
+        .navbar-bottom-link {
+            margin: 0 70px;
+            padding: 10px 0;
+        }
+    }
+}
