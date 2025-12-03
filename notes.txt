@@ -1,0 +1,33 @@
+1.
+pip install flask flask_sqlalchemy
+
+
+2.
+python
+
+
+3.
+from app import app, db
+with app.app_context():
+    db.create_all()
+
+
+4.
+
+with app.app_context():
+    inspector = db.inspect(db.engine)
+    print(inspector.get_table_names())
+
+
+
+#insert user
+from app import app, db
+from models import User
+
+with app.app_context():
+    u = User(username="Roy")
+    db.session.add(u)
+    db.session.commit()
+
+with app.app_context():
+    print(User.query.all())

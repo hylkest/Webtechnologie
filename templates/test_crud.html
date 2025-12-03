@@ -1,0 +1,28 @@
+<h1>CRUD Test Page</h1>
+
+<h2>Add Item</h2>
+<form method="POST">
+    <input type="text" name="name" placeholder="New item name">
+    <button type="submit">Add</button>
+</form>
+
+<hr>
+
+<h2>Items</h2>
+
+<ul>
+    {% for item in items %}
+        <li>
+            {{ item.id }} — {{ item.name }}
+
+            <!-- Update Form -->
+            <form action="/crud/update/{{ item.id }}" method="POST" style="display:inline;">
+                <input type="text" name="new_name" placeholder="New name">
+                <button>Update</button>
+            </form>
+
+            <!-- Delete -->
+            <a href="/crud/delete/{{ item.id }}">Delete</a>
+        </li>
+    {% endfor %}
+</ul>
