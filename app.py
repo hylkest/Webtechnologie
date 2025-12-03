@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+from extensions import db
 
 app = Flask(__name__)
 
@@ -17,6 +18,10 @@ def home():
 def verwerk():
     naam = request.form.get("naam")
     return f"Hallo {naam}, dit komt uit de backend!"
+
+@app.route("/profile")
+def profile():
+    return render_template("profile/profile.html")
 
 if __name__ == '__main__':
     app.run(debug=True)
