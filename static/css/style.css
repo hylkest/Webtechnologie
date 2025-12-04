@@ -110,3 +110,7 @@ body {
     background: blue;
     transition: 0.3s;
 }
+
+.navbar-navigation {
+    margin-bottom: 0;
+}

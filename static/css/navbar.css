@@ -1,5 +1,6 @@
 .navbar-bottom {
-    background: grey;
+    background: white;
+    border-top: 1px solid gainsboro;
 
     ul {
         list-style-type: none;
