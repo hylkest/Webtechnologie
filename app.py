@@ -7,10 +7,6 @@ app = Flask(__name__)
 def home():
     return render_template("index.html")
 
-@app.route('/')
-def home():
-    return render_template("index.html")
-
 @app.route('/verwerk', methods=['POST'])
 def verwerk():
     naam = request.form.get("naam")
