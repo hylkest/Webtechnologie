@@ -1,8 +1,10 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
 import os
-
 app = Flask(__name__)
+app.secret_key = "iets_super_randoms_hier"
+
+
 
 # -----------------------------
 # SQLite helper
@@ -22,45 +24,67 @@ def home():
 def verwerk():
     naam = request.form.get("naam")
     return f"Hallo {naam}, dit komt uit de backend!"
+
 # -----------------------------
-# CRUD ROUTES
+# REGISTER ROUTE
 # -----------------------------
-@app.route('/crud', methods=['GET', 'POST'])
-def crud():
-    conn = get_db()
-    cursor = conn.cursor()
-    # Add new item
-    if request.method == "POST":
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
         name = request.form.get("name")
-        if name:
-            cursor.execute("INSERT INTO items (name) VALUES (?)", (name,))
-            conn.commit()
-    # Load all items
-    cursor.execute("SELECT * FROM items")
-    items = cursor.fetchall()
-    conn.close()
-    return render_template("crud.html", items=items)
+        email = request.form.get("email")
+        password = request.form.get("password")
+
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
+            (name, email, password)
+        )
+        conn.commit()
+        conn.close()
+
+        # Redirect naar login pagina
+        return redirect(url_for('login'))
+
+    return render_template("auth/register.html")
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form.get("email")
+        password = request.form.get("password")
+
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE email=?", (email,))
+        user = cursor.fetchone()
+        conn.close()
+
+        if not user:
+            flash("Email bestaat niet.", "danger")
+            return redirect(url_for('login'))
+
+        if user['password'] != password:
+            flash("Wachtwoord onjuist.", "danger")
+            return redirect(url_for('login'))
+
+        session['user_id'] = user['id']
+        session['user_name'] = user['name']
+
+        flash(f"Welkom terug, {user['name']}!", "success")
+        return redirect(url_for('feed'))  # ✔️ correct
+
+    return render_template("auth/login.html")
 
 
-@app.route('/crud/update/<int:item_id>', methods=['POST'])
-def crud_update(item_id):
-    new_name = request.form.get("new_name")
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute("UPDATE items SET name=? WHERE id=?", (new_name, item_id))
-    conn.commit()
-    conn.close()
-    return redirect('/crud')
+@app.route('/feed')
+def feed():
+    # Check of user is ingelogd
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
 
-
-@app.route('/crud/delete/<int:item_id>')
-def crud_delete(item_id):
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM items WHERE id=?", (item_id,))
-    conn.commit()
-    conn.close()
-    return redirect('/crud')
+    return render_template("posts/feed.html", name=session['user_name'])
 
 # -----------------------------
 # MAIN
