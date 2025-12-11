@@ -1,30 +1,53 @@
 {% include "includes/header.html" %}
 
-<div class="container-md">
-    <div class="container-md feed">
-        <div class="blogpost">
-            <div class="blogpost-title">
-                <p>@hylkestorteboom</p>
-            </div>
-            <div class="blogpost-post">
-                <img src="{{ url_for('static', filename='favicon.png') }}">
-            </div>
-            <div class="blogpost-content">
-                <p><strong>hylkestorteboom</strong> - Dit is beschrijving van een post</p>
-            </div>
+<div class="container-md feed">
+
+  {% if posts %}
+    {% for post in posts %}
+      <div class="blogpost">
+
+        <!-- USERNAME -->
+        <div class="blogpost-title">
+          <p>@{{ post.username }}</p>
         </div>
-        <div class="blogpost">
-            <div class="blogpost-title">
-                <p>@levano</p>
-            </div>
-            <div class="blogpost-post">
-                <img src="{{ url_for('static', filename='favicon.png') }}">
-            </div>
-            <div class="blogpost-content">
-                <p><strong>levano</strong> - Dit is beschrijving van een post</p>
-            </div>
+
+        <!-- MEDIA -->
+        <div class="blogpost-post">
+          {% if post.media_type == "image" %}
+            <img
+              src="{{ url_for('static', filename=post.media_path) }}"
+              alt="Post image"
+              loading="lazy"
+            >
+          {% elif post.media_type == "video" %}
+            <video controls preload="metadata">
+              <source
+                src="{{ url_for('static', filename=post.media_path) }}"
+                type="video/mp4"
+              >
+              Your browser does not support the video tag.
+            </video>
+          {% endif %}
         </div>
-    </div>
+
+        <!-- CAPTION -->
+        <div class="blogpost-content">
+          <p>
+            <strong>{{ post.username }}</strong>
+            {% if post.caption %}
+              – {{ post.caption }}
+            {% endif %}
+          </p>
+        </div>
+
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="text-center text-muted mt-4">
+      Nog geen posts.
+    </p>
+  {% endif %}
+
 </div>
 
 {% include "includes/footer.html" %}
