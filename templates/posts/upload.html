@@ -1,5 +1,22 @@
 {% include "includes/header.html" %}
 
-<!-- UPLOAD HTML HIER -->
+<div class="container-md">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2 class="mt-4 mb-3 text-center">Nieuwe post</h2>
+            <form method="POST" enctype="multipart/form-data" class="card p-4 shadow-sm">
+                <div class="mb-3">
+                    <label for="image" class="form-label">Afbeelding</label>
+                    <input class="form-control" type="file" id="image" name="image" accept="image/*" required>
+                </div>
+                <div class="mb-3">
+                    <label for="caption" class="form-label">Caption (optioneel)</label>
+                    <textarea class="form-control" id="caption" name="caption" rows="3" placeholder="Vertel iets over je post"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Uploaden</button>
+            </form>
+        </div>
+    </div>
+</div>
 
 {% include "includes/footer.html" %}
