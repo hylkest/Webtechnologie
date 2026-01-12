@@ -1,15 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
 import os
-<<<<<<< HEAD
 app = Flask(__name__)
 app.secret_key = "iets_super_randoms_hier"
 
 
-=======
 from datetime import datetime
 from werkzeug.utils import secure_filename
->>>>>>> 77e96305e5f6a5435b6a464c2abda3204c1ea633
 
 # -----------------------------
 # APP SETUP
@@ -106,7 +103,6 @@ def profile():
     if "user_id" not in session:
         return redirect(url_for("login"))
 
-<<<<<<< HEAD
 @app.route('/feed')
 def feed():
     # Check of user is ingelogd
@@ -114,7 +110,6 @@ def feed():
         return redirect(url_for('login'))
 
     return render_template("posts/feed.html", name=session['user_name'])
-=======
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute(
@@ -217,7 +212,6 @@ def create_post():
 def logout():
     session.clear()
     return redirect(url_for("login"))
->>>>>>> 77e96305e5f6a5435b6a464c2abda3204c1ea633
 
 # -----------------------------
 # MAIN
