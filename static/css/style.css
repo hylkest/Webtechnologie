@@ -27,6 +27,7 @@ header {
 body {
     margin: 0;
     font-family: "Roboto", sans-serif;
+    padding-bottom: 90px;
 }
 
 /* Containers */

@@ -1,15 +1,33 @@
 .navbar-bottom {
-    background: white;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #fff;
     border-top: 1px solid gainsboro;
+    z-index: 1030;
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.05);
+}
 
-    ul {
-        list-style-type: none;
-        display: flex;
-        justify-content: center;
+.navbar-bottom .navbar-navigation {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    list-style: none;
+    padding: 10px 20px;
+    margin: 0;
+}
 
-        .navbar-bottom-link {
-            margin: 0 70px;
-            padding: 10px 0;
-        }
-    }
+.navbar-bottom .navbar-bottom-link {
+    margin: 0;
+}
+
+.navbar-bottom .navbar-bottom-link a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar-bottom svg {
+    display: block;
 }
