@@ -1,12 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
 import os
-app = Flask(__name__)
-app.secret_key = "iets_super_randoms_hier"
-
-
 from datetime import datetime
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # -----------------------------
 # APP SETUP
@@ -58,9 +55,10 @@ def register():
             flash("Email bestaat al.", "danger")
             return redirect(url_for("register"))
 
+        hashed_password = generate_password_hash(password)
         cursor.execute(
             "INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
-            (username, email, password)
+            (username, email, hashed_password)
         )
         conn.commit()
         conn.close()
@@ -84,7 +82,7 @@ def login():
         user = cursor.fetchone()
         conn.close()
 
-        if not user or user["password"] != password:
+        if not user or not check_password_hash(user["password"], password):
             flash("Ongeldige inloggegevens.", "danger")
             return redirect(url_for("login"))
 
@@ -103,13 +101,6 @@ def profile():
     if "user_id" not in session:
         return redirect(url_for("login"))
 
-@app.route('/feed')
-def feed():
-    # Check of user is ingelogd
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-
-    return render_template("posts/feed.html", name=session['user_name'])
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute(
