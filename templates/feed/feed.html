@@ -1,0 +1,53 @@
+{% include "includes/header.html" %}
+
+<div class="container-md feed">
+
+  {% if posts %}
+    {% for post in posts %}
+      <div class="blogpost">
+
+        <!-- USERNAME -->
+        <div class="blogpost-title">
+          <p>@{{ post.username }}</p>
+        </div>
+
+        <!-- MEDIA -->
+        <div class="blogpost-post">
+          {% if post.media_type == "image" %}
+            <img
+              src="{{ url_for('static', filename=post.media_path) }}"
+              alt="Post image"
+              loading="lazy"
+            >
+          {% elif post.media_type == "video" %}
+            <video controls preload="metadata">
+              <source
+                src="{{ url_for('static', filename=post.media_path) }}"
+                type="video/mp4"
+              >
+              Your browser does not support the video tag.
+            </video>
+          {% endif %}
+        </div>
+
+        <!-- CAPTION -->
+        <div class="blogpost-content">
+          <p>
+            <strong>{{ post.username }}</strong>
+            {% if post.caption %}
+              – {{ post.caption }}
+            {% endif %}
+          </p>
+        </div>
+
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="text-center text-muted mt-4">
+      Nog geen posts.
+    </p>
+  {% endif %}
+
+</div>
+
+{% include "includes/footer.html" %}
