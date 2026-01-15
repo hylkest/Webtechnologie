@@ -13,7 +13,7 @@
           Meld je aan om foto’s en momenten te delen.
         </p>
 
-        <form action="{{ url_for('register') }}" method="POST" class="text-start">
+        <form action="{{ url_for('register') }}" method="POST" class="text-start" enctype="multipart/form-data">
 
           <div class="mb-3">
             <label class="form-label">Gebruikersnaam</label>
@@ -28,6 +28,11 @@
           <div class="mb-3">
             <label class="form-label">Wachtwoord</label>
             <input type="password" name="password" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Profielfoto (optioneel)</label>
+            <input type="file" name="profile_photo" class="form-control" accept="image/*">
           </div>
 
           <button type="submit" class="btn btn-primary w-100 mt-2">

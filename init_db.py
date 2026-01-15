@@ -10,9 +10,11 @@ def init_db():
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT NOT NULL,
+        username TEXT NOT NULL UNIQUE,
         email TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL
+        password TEXT NOT NULL,
+        bio TEXT DEFAULT '',
+        profile_photo TEXT
     )
     """)
 
@@ -59,10 +61,10 @@ def init_db():
     if cursor.fetchone() is None:
         cursor.execute(
             """
-            INSERT INTO users (username, email, password)
-            VALUES (?, ?, ?)
+            INSERT INTO users (username, email, password, bio, profile_photo)
+            VALUES (?, ?, ?, ?, ?)
             """,
-            ("admin", "admin@admin.nl", "admin")
+            ("admin", "admin@admin.nl", "admin", "", None)
         )
         print("Default user created: admin / admin@admin.nl / admin")
     else:

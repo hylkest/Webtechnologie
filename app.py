@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 import sqlite3
 import os
 from datetime import datetime
+import uuid
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -45,11 +46,67 @@ def ensure_post_likes_table():
 
 ensure_post_likes_table()
 
+
+def ensure_user_profile_fields():
+    """Make sure the users table has profile-related columns and constraints."""
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='users'"
+    )
+    if cursor.fetchone() is None:
+        conn.close()
+        return
+    cursor.execute("PRAGMA table_info(users)")
+    columns = {row["name"] for row in cursor.fetchall()}
+    if "bio" not in columns:
+        cursor.execute("ALTER TABLE users ADD COLUMN bio TEXT DEFAULT ''")
+    if "profile_photo" not in columns:
+        cursor.execute("ALTER TABLE users ADD COLUMN profile_photo TEXT")
+    try:
+        cursor.execute(
+            "CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users(username)"
+        )
+    except sqlite3.OperationalError:
+        # Index creation can fail if duplicate usernames already exist.
+        pass
+    conn.commit()
+    conn.close()
+
+
+ensure_user_profile_fields()
+
 # -----------------------------
 # UPLOAD CONFIG
 # -----------------------------
 UPLOAD_FOLDER = os.path.join(app.root_path, "static", "uploads")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+PROFILE_UPLOAD_FOLDER = os.path.join(UPLOAD_FOLDER, "profile_photos")
+os.makedirs(PROFILE_UPLOAD_FOLDER, exist_ok=True)
+
+
+def save_profile_photo(file_storage):
+    """Persist a profile photo and return the relative static path."""
+    if not file_storage or file_storage.filename == "":
+        return None
+    filename = secure_filename(file_storage.filename)
+    ext = os.path.splitext(filename)[1]
+    unique_name = f"{uuid.uuid4().hex}{ext}"
+    destination = os.path.join(PROFILE_UPLOAD_FOLDER, unique_name)
+    file_storage.save(destination)
+    return f"uploads/profile_photos/{unique_name}"
+
+
+def delete_file_if_exists(relative_path):
+    """Remove a static file by relative path if it exists."""
+    if not relative_path:
+        return
+    absolute_path = os.path.join(app.root_path, "static", relative_path)
+    if os.path.exists(absolute_path):
+        try:
+            os.remove(absolute_path)
+        except OSError:
+            pass
 
 # -----------------------------
 # HOME
@@ -69,9 +126,16 @@ def register():
         username = request.form.get("username")
         email = request.form.get("email")
         password = request.form.get("password")
+        profile_photo = request.files.get("profile_photo")
 
         conn = get_db()
         cursor = conn.cursor()
+
+        cursor.execute("SELECT id FROM users WHERE username = ?", (username,))
+        if cursor.fetchone():
+            conn.close()
+            flash("Gebruikersnaam bestaat al.", "danger")
+            return redirect(url_for("register"))
 
         cursor.execute("SELECT id FROM users WHERE email = ?", (email,))
         if cursor.fetchone():
@@ -80,9 +144,13 @@ def register():
             return redirect(url_for("register"))
 
         hashed_password = generate_password_hash(password)
+        photo_path = save_profile_photo(profile_photo)
         cursor.execute(
-            "INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
-            (username, email, hashed_password)
+            """
+            INSERT INTO users (username, email, password, bio, profile_photo)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            (username, email, hashed_password, "", photo_path)
         )
         conn.commit()
         conn.close()
@@ -127,6 +195,12 @@ def profile():
 
     conn = get_db()
     cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users WHERE id = ?", (session["user_id"],))
+    profile_user = cursor.fetchone()
+    if not profile_user:
+        conn.close()
+        session.clear()
+        return redirect(url_for("login"))
     cursor.execute(
         "SELECT * FROM posts WHERE user_id = ? ORDER BY created_at DESC",
         (session["user_id"],)
@@ -136,10 +210,62 @@ def profile():
 
     return render_template(
         "profile/profile.html",
-        username=session["user_name"],
-        bio="This is my bio.",
+        profile_user=profile_user,
         posts=posts
     )
+
+
+@app.route("/profile/edit", methods=["GET", "POST"])
+def edit_profile_page():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users WHERE id = ?", (session["user_id"],))
+    user = cursor.fetchone()
+
+    if not user:
+        conn.close()
+        session.clear()
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+        new_username = request.form.get("username", "").strip()
+        bio = request.form.get("bio", "").strip()
+        profile_photo = request.files.get("profile_photo")
+
+        if not new_username:
+            flash("Gebruikersnaam is verplicht.", "danger")
+            conn.close()
+            return redirect(url_for("edit_profile_page"))
+
+        cursor.execute(
+            "SELECT id FROM users WHERE username = ? AND id != ?",
+            (new_username, session["user_id"])
+        )
+        if cursor.fetchone():
+            flash("Deze gebruikersnaam is al in gebruik.", "danger")
+            conn.close()
+            return redirect(url_for("edit_profile_page"))
+
+        photo_path = user["profile_photo"]
+        if profile_photo and profile_photo.filename:
+            delete_file_if_exists(photo_path)
+            photo_path = save_profile_photo(profile_photo)
+
+        cursor.execute(
+            "UPDATE users SET username = ?, bio = ?, profile_photo = ? WHERE id = ?",
+            (new_username, bio, photo_path, session["user_id"])
+        )
+        conn.commit()
+        conn.close()
+        session["user_name"] = new_username
+        flash("Profiel bijgewerkt.", "success")
+        return redirect(url_for("profile"))
+
+    conn.close()
+    return render_template("profile/edit_profile.html", user=user)
 
 # -----------------------------
 # FEED (ALLE POSTS)
@@ -294,13 +420,7 @@ def delete_post(post_id):
     conn.commit()
     conn.close()
 
-    if media_path:
-        media_abs_path = os.path.join(app.root_path, "static", media_path)
-        try:
-            if os.path.exists(media_abs_path):
-                os.remove(media_abs_path)
-        except OSError:
-            pass
+    delete_file_if_exists(media_path)
 
     flash("Post verwijderd.", "success")
     return redirect(url_for("profile"))

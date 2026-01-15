@@ -14,7 +14,11 @@ def get_user_by_id(user_id):
     cursor = conn.cursor()
 
     cursor.execute(
-        "SELECT id, username, email, created_at FROM users WHERE id = ?",
+        """
+        SELECT id, username, email, bio, profile_photo
+        FROM users
+        WHERE id = ?
+        """,
         (user_id,)
     )
     row = cursor.fetchone()
