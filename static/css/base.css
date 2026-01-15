@@ -36,3 +36,31 @@
         padding: 10px;
     }
 }
+
+.blogpost-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-top: 1px solid #eaeaea;
+}
+
+.like-button {
+    border: none;
+    background: transparent;
+    font-weight: 600;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    cursor: pointer;
+    color: #333;
+    padding: 0;
+}
+
+.like-button.liked {
+    color: #e63946;
+}
+
+.like-count {
+    font-weight: 600;
+}

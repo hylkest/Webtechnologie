@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 import sqlite3
 import os
 from datetime import datetime
@@ -20,6 +20,30 @@ def get_db():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
+
+
+def ensure_post_likes_table():
+    """Create the post_likes table if it does not exist."""
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS post_likes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            post_id INTEGER NOT NULL,
+            user_id INTEGER NOT NULL,
+            created_at TEXT NOT NULL,
+            UNIQUE(post_id, user_id),
+            FOREIGN KEY (post_id) REFERENCES posts(id),
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        )
+        """
+    )
+    conn.commit()
+    conn.close()
+
+
+ensure_post_likes_table()
 
 # -----------------------------
 # UPLOAD CONFIG
@@ -128,11 +152,22 @@ def feed():
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT posts.*, users.username
+        SELECT
+            posts.*,
+            COALESCE(users.username, 'Onbekende gebruiker') AS username,
+            COALESCE(like_counts.like_count, 0) AS like_count,
+            CASE WHEN user_likes.user_id IS NULL THEN 0 ELSE 1 END AS liked_by_current_user
         FROM posts
-        JOIN users ON posts.user_id = users.id
+        LEFT JOIN users ON posts.user_id = users.id
+        LEFT JOIN (
+            SELECT post_id, COUNT(*) AS like_count
+            FROM post_likes
+            GROUP BY post_id
+        ) AS like_counts ON posts.id = like_counts.post_id
+        LEFT JOIN post_likes AS user_likes
+            ON posts.id = user_likes.post_id AND user_likes.user_id = ?
         ORDER BY posts.created_at DESC
-    """)
+    """, (session["user_id"],))
     posts = cursor.fetchall()
     conn.close()
 
@@ -195,6 +230,127 @@ def create_post():
     conn.close()
 
     return redirect(url_for("profile"))
+
+
+@app.route("/posts/<int:post_id>/edit", methods=["GET", "POST"])
+def edit_post(post_id):
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM posts WHERE id = ?", (post_id,))
+    post = cursor.fetchone()
+
+    if not post:
+        conn.close()
+        flash("Post niet gevonden.", "danger")
+        return redirect(url_for("profile"))
+
+    if post["user_id"] != session["user_id"]:
+        conn.close()
+        flash("Je kunt deze post niet bewerken.", "danger")
+        return redirect(url_for("profile"))
+
+    if request.method == "POST":
+        title = request.form.get("title")
+        caption = request.form.get("caption")
+        cursor.execute(
+            "UPDATE posts SET title = ?, caption = ? WHERE id = ?",
+            (title, caption, post_id)
+        )
+        conn.commit()
+        conn.close()
+        flash("Post bijgewerkt.", "success")
+        return redirect(url_for("profile"))
+
+    conn.close()
+    return render_template("posts/edit.html", post=post)
+
+
+@app.route("/posts/<int:post_id>/delete", methods=["POST"])
+def delete_post(post_id):
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM posts WHERE id = ?", (post_id,))
+    post = cursor.fetchone()
+
+    if not post:
+        conn.close()
+        flash("Post niet gevonden.", "danger")
+        return redirect(url_for("profile"))
+
+    if post["user_id"] != session["user_id"]:
+        conn.close()
+        flash("Je kunt deze post niet verwijderen.", "danger")
+        return redirect(url_for("profile"))
+
+    media_path = post["media_path"]
+    cursor.execute("DELETE FROM post_likes WHERE post_id = ?", (post_id,))
+    cursor.execute("DELETE FROM posts WHERE id = ?", (post_id,))
+    conn.commit()
+    conn.close()
+
+    if media_path:
+        media_abs_path = os.path.join(app.root_path, "static", media_path)
+        try:
+            if os.path.exists(media_abs_path):
+                os.remove(media_abs_path)
+        except OSError:
+            pass
+
+    flash("Post verwijderd.", "success")
+    return redirect(url_for("profile"))
+
+
+@app.route("/posts/<int:post_id>/like", methods=["POST"])
+def toggle_like(post_id):
+    if "user_id" not in session:
+        return jsonify({"error": "Niet ingelogd."}), 401
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT id FROM posts WHERE id = ?", (post_id,))
+    if cursor.fetchone() is None:
+        conn.close()
+        return jsonify({"error": "Post niet gevonden."}), 404
+
+    cursor.execute(
+        "SELECT id FROM post_likes WHERE post_id = ? AND user_id = ?",
+        (post_id, session["user_id"])
+    )
+    existing_like = cursor.fetchone()
+
+    if existing_like:
+        cursor.execute("DELETE FROM post_likes WHERE id = ?", (existing_like["id"],))
+        conn.commit()
+        cursor.execute(
+            "SELECT COUNT(*) AS count FROM post_likes WHERE post_id = ?",
+            (post_id,)
+        )
+        like_count = cursor.fetchone()["count"]
+        conn.close()
+        return jsonify({"liked": False, "like_count": like_count})
+
+    cursor.execute(
+        """
+        INSERT INTO post_likes (post_id, user_id, created_at)
+        VALUES (?, ?, ?)
+        """,
+        (post_id, session["user_id"], datetime.utcnow().isoformat())
+    )
+    conn.commit()
+    cursor.execute(
+        "SELECT COUNT(*) AS count FROM post_likes WHERE post_id = ?",
+        (post_id,)
+    )
+    like_count = cursor.fetchone()["count"]
+    conn.close()
+    return jsonify({"liked": True, "like_count": like_count})
 
 # -----------------------------
 # LOGOUT

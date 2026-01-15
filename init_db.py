@@ -34,6 +34,21 @@ def init_db():
     """)
 
     # -----------------------------
+    # POST LIKES TABLE
+    # -----------------------------
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS post_likes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        post_id INTEGER NOT NULL,
+        user_id INTEGER NOT NULL,
+        created_at TEXT NOT NULL,
+        UNIQUE(post_id, user_id),
+        FOREIGN KEY (post_id) REFERENCES posts(id),
+        FOREIGN KEY (user_id) REFERENCES users(id)
+    )
+    """)
+
+    # -----------------------------
     # DEFAULT TEST USER
     # -----------------------------
     cursor.execute(

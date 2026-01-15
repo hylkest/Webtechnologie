@@ -40,6 +40,26 @@
           </p>
         </div>
 
+        <!-- LIKES -->
+        <div class="blogpost-actions" data-post-id="{{ post.id }}">
+          <button
+            type="button"
+            class="like-button {% if post.liked_by_current_user %}liked{% endif %}"
+            data-post-id="{{ post.id }}"
+            aria-pressed="{{ 1 if post.liked_by_current_user else 0 }}"
+          >
+            <span class="like-icon">&hearts;</span>
+            <span class="like-label">
+              {% if post.liked_by_current_user %}
+                Je vindt dit leuk
+              {% else %}
+                Vind ik leuk
+              {% endif %}
+            </span>
+          </button>
+          <span class="like-count">{{ post.like_count or 0 }}</span>
+        </div>
+
       </div>
     {% endfor %}
   {% else %}
@@ -49,5 +69,38 @@
   {% endif %}
 
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const likeButtons = document.querySelectorAll(".like-button");
+
+  likeButtons.forEach(function (button) {
+    button.addEventListener("click", async function () {
+      const postId = button.dataset.postId;
+      const parent = button.closest(".blogpost-actions");
+      const countEl = parent ? parent.querySelector(".like-count") : null;
+
+      try {
+        const response = await fetch(`/posts/${postId}/like`, { method: "POST" });
+        if (!response.ok) {
+          return;
+        }
+        const data = await response.json();
+        button.classList.toggle("liked", Boolean(data.liked));
+        button.setAttribute("aria-pressed", data.liked ? "1" : "0");
+        if (countEl && typeof data.like_count !== "undefined") {
+          countEl.textContent = data.like_count;
+        }
+        const label = button.querySelector(".like-label");
+        if (label) {
+          label.textContent = data.liked ? "Je vindt dit leuk" : "Vind ik leuk";
+        }
+      } catch (error) {
+        console.error("Like request failed", error);
+      }
+    });
+  });
+});
+</script>
 
 {% include "includes/footer.html" %}
