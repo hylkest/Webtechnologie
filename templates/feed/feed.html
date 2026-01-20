@@ -131,8 +131,7 @@
               <!-- POST HASH -->
               <div class="post-hash">
                 <!-- Hash van deze post (pseudo-blockchain) -->
-                <span class="post-hash-label">Hash</span>
-                <code>0000000000000000000a9f2c7d1b3e5f</code>
+                <code>HASH 0000000000000000000a9f2c7d1b3e5f</code>
               </div>
 
               <!-- COIN DONATIE -->
@@ -223,36 +222,48 @@
 </div>
 
 <script>
-/* Like-button AJAX afhandeling */
 document.addEventListener("DOMContentLoaded", function () {
-  const likeButtons = document.querySelectorAll(".like-button");
+  // Zoek alle like-knoppen op de pagina
+  var buttons = document.querySelectorAll(".like-button");
 
-  likeButtons.forEach(function (button) {
-    button.addEventListener("click", async function () {
-      const postId = button.dataset.postId;
-      const parent = button.closest(".blogpost-actions");
-      const countEl = parent ? parent.querySelector(".like-count") : null;
+  buttons.forEach(function (button) {
+    // Klik op de knop triggert de like actie
+    button.addEventListener("click", function () {
+      // Haal het post-id uit de data-attribute
+      var postId = button.dataset.postId;
 
-      try {
-        const response = await fetch(`/posts/${postId}/like`, { method: "POST" });
-        if (!response.ok) return;
+      // Stuur een POST naar de server om te liken/unliken
+      fetch("/posts/" + postId + "/like", { method: "POST" })
+        .then(function (response) {
+          // Antwoord omzetten naar JSON
+          return response.json();
+        })
+        .then(function (data) {
+          // Zoek elementen voor teller en label
+          var parent = button.closest(".blogpost-actions");
+          var countEl = parent ? parent.querySelector(".like-count") : null;
+          var label = button.querySelector(".like-label");
 
-        const data = await response.json();
+          // Werk de knopstatus en tekst bij
+          if (data.liked) {
+            button.classList.add("liked");
+            button.setAttribute("aria-pressed", "1");
+            if (label) label.textContent = "Je vindt dit leuk";
+          } else {
+            button.classList.remove("liked");
+            button.setAttribute("aria-pressed", "0");
+            if (label) label.textContent = "Vind ik leuk";
+          }
 
-        button.classList.toggle("liked", Boolean(data.liked));
-        button.setAttribute("aria-pressed", data.liked ? "1" : "0");
-
-        if (countEl) {
-          countEl.textContent = data.like_count;
-        }
-
-        const label = button.querySelector(".like-label");
-        if (label) {
-          label.textContent = data.liked ? "Je vindt dit leuk" : "Vind ik leuk";
-        }
-      } catch (error) {
-        console.error("Like request failed", error);
-      }
+          // Werk de like teller bij
+          if (countEl) {
+            countEl.textContent = data.like_count;
+          }                                
+        })
+        .catch(function (error) {
+          // Fout loggen als de request mislukt
+          console.error("Like request failed", error);
+        });
     });
   });
 });

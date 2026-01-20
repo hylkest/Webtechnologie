@@ -40,17 +40,14 @@
     <div class="mb-3">
       <label class="form-label">Profielfoto</label>
 
-      {% if user['profile_photo'] %}
-        <!-- Toon huidige profielfoto indien aanwezig -->
-        <div class="mb-2">
-          <img
-            src="{{ url_for('static', filename=user['profile_photo']) }}"
-            alt="Huidige profielfoto"
-            class="rounded-circle"
-            style="width: 80px; height: 80px; object-fit: cover;"
-          >
-        </div>
-      {% endif %}
+      <div class="mb-2">
+        <img
+          src="{{ url_for('static', filename=user['profile_photo'] or 'default/default.png') }}"
+          alt="Huidige profielfoto"
+          class="rounded-circle"
+          style="width: 80px; height: 80px; object-fit: cover;"
+        >
+      </div>
 
       <input type="file" name="profile_photo" class="form-control" accept="image/*">
       <!-- Upload veld voor een nieuwe profielfoto -->
@@ -64,7 +61,7 @@
       <button type="submit" class="btn btn-primary">Opslaan</button>
       <!-- Slaat profielwijzigingen op -->
 
-      <a href="{{ url_for('profile') }}" class="btn btn-outline-secondary">Annuleren</a>
+      <a href="{{ url_for('profile') }}" class="btn btn-secondary">Annuleren</a>
       <!-- Terug naar profiel zonder opslaan -->
     </div>
   </form>

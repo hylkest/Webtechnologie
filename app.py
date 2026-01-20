@@ -18,6 +18,10 @@ app.secret_key = "iets_super_randoms_hier"
 # -----------------------------
 # Databasepad en helpers om de sqlite verbinding te maken.
 DB_PATH = os.path.join(os.path.dirname(__file__), "app.db")
+UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "static", "uploads")
+PROFILE_UPLOAD_FOLDER = os.path.join(UPLOAD_FOLDER, "profile")
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(PROFILE_UPLOAD_FOLDER, exist_ok=True)
 
 def get_db():
     # Open een sqlite-verbinding met dict-achtige rijen.
@@ -28,6 +32,29 @@ def get_db():
 def generate_wallet_hash():
     # Genereer een pseudo wallet-id voor weergave.
     return f"0x{uuid.uuid4().hex}"
+
+def delete_file_if_exists(relative_path):
+    # Verwijder een bestand uit de static-map als het bestaat.
+    if not relative_path:
+        return
+    if relative_path in ("default/default.png", "uploads/default.png", "default.png"):
+        return
+    base_dir = app.static_folder or os.path.join(os.path.dirname(__file__), "static")
+    file_path = relative_path
+    if not os.path.isabs(file_path):
+        file_path = os.path.join(base_dir, relative_path)
+    if os.path.isfile(file_path):
+        os.remove(file_path)
+
+def save_profile_photo(profile_photo):
+    # Sla een profielfoto op en geef het relative pad terug.
+    if not profile_photo or not profile_photo.filename:
+        return None
+    filename = secure_filename(profile_photo.filename)
+    unique_name = f"{uuid.uuid4().hex}_{filename}"
+    filepath = os.path.join(PROFILE_UPLOAD_FOLDER, unique_name)
+    profile_photo.save(filepath)
+    return f"uploads/profile/{unique_name}"
 
 # -----------------------------
 # edit profile
@@ -116,7 +143,7 @@ def register():
         hashed_password = generate_password_hash(password)
         photo_path = save_profile_photo(profile_photo)
         if photo_path is None:
-            photo_path = "default_profile.png"
+            photo_path = "default/default.png"
         cursor.execute(
             """
             INSERT INTO users (username, email, password, bio, profile_photo, wallet_hash)
@@ -457,8 +484,12 @@ def delete_post(post_id):
         return redirect(url_for("profile"))
 
 
+# -----------------------------
+# post likes
+# -----------------------------
 @app.route("/posts/<int:post_id>/like", methods=["POST"])
 def toggle_like(post_id):
+    # Endpoint waar de like-button naartoe POST (zie feed/feed.html).
     # Toggle een like op een post voor de huidige user.
     if "user_id" not in session:
         return jsonify({"error": "Niet ingelogd."}), 401
@@ -479,7 +510,7 @@ def toggle_like(post_id):
     existing_like = cursor.fetchone()
 
     if existing_like:
-        # Verwijder de bestaande like.
+        # Verwijder de bestaande like (unlike).
         cursor.execute("DELETE FROM post_likes WHERE id = ?", (existing_like["id"],))
         conn.commit()
         cursor.execute(
@@ -488,6 +519,7 @@ def toggle_like(post_id):
         )
         like_count = cursor.fetchone()["count"]
         conn.close()
+        # Geef terug: niet geliked + nieuw aantal likes.
         return jsonify({"liked": False, "like_count": like_count})
 
     # Voeg een like toe.
@@ -505,11 +537,8 @@ def toggle_like(post_id):
     )
     like_count = cursor.fetchone()["count"]
     conn.close()
+    # Geef terug: geliked + nieuw aantal likes.
     return jsonify({"liked": True, "like_count": like_count})
-
-# -----------------------------
-# post likes
-# -----------------------------
 # Aanmaken van de likes-tabel (voor bestaande databases).
 
 def ensure_post_likes_table():

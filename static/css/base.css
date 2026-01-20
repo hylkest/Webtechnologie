@@ -346,9 +346,10 @@ code {
 /* Feed posts (feed/feed.html): like/delete actions */
 .blogpost-actions {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 10px;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 18px;
     border-top: 1px solid var(--theme-border);
 }
 
@@ -560,7 +561,7 @@ code {
 .post-hash {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 12px;
     padding: 10px 18px 14px;
     border-top: 1px solid var(--theme-border);
@@ -581,6 +582,7 @@ code {
     padding: 6px 10px;
     border-radius: 10px;
     font-size: 0.75rem;
+    white-space: nowrap;
 }
 
 /* Posts page (posts/new.html): post hash preview */
