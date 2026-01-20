@@ -5,6 +5,9 @@ from datetime import datetime
 import uuid
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
+from database import get_db
+from models.user import User
+from models.post import Post
 
 # -----------------------------
 # APP SETUP
@@ -17,17 +20,10 @@ app.secret_key = "iets_super_randoms_hier"
 # DATABASE
 # -----------------------------
 # Databasepad en helpers om de sqlite verbinding te maken.
-DB_PATH = os.path.join(os.path.dirname(__file__), "app.db")
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "static", "uploads")
 PROFILE_UPLOAD_FOLDER = os.path.join(UPLOAD_FOLDER, "profile")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(PROFILE_UPLOAD_FOLDER, exist_ok=True)
-
-def get_db():
-    # Open een sqlite-verbinding met dict-achtige rijen.
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
 
 def generate_wallet_hash():
     # Genereer een pseudo wallet-id voor weergave.
@@ -177,17 +173,25 @@ def login():
         conn = get_db()
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
-        user = cursor.fetchone()
+        # Stap 1 (User): haal user-row uit de database op.
+        user_row = cursor.fetchone()
         conn.close()
 
         # Controleer of wachtwoord klopt.
-        if not user or not check_password_hash(user["password"], password):
+        if not user_row:
+            flash("Ongeldige inloggegevens.", "danger")
+            return redirect(url_for("login"))
+
+        # Stap 2 (User): maak een User model van de row.
+        user = User.from_row(user_row)
+        if not user.password or not check_password_hash(user.password, password):
             flash("Ongeldige inloggegevens.", "danger")
             return redirect(url_for("login"))
 
         # Sla user in sessie op.
-        session["user_id"] = user["id"]
-        session["user_name"] = user["username"]
+        # Stap 3 (User): gebruik het model in de sessie.
+        session["user_id"] = user.id
+        session["user_name"] = user.username
 
         return redirect(url_for("profile"))
 
@@ -206,18 +210,23 @@ def profile():
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM users WHERE id = ?", (session["user_id"],))
-    profile_user = cursor.fetchone()
-    if not profile_user:
+    # Stap 1 (User): haal profiel-row uit de database op.
+    profile_user_row = cursor.fetchone()
+    if not profile_user_row:
         conn.close()
         session.clear()
         return redirect(url_for("login"))
+    # Stap 2 (User): maak een User model voor de template.
+    profile_user = User.from_row(profile_user_row)
     cursor.execute(
         "SELECT * FROM posts WHERE user_id = ? ORDER BY created_at DESC",
         (session["user_id"],)
     )
-    posts = cursor.fetchall()
+    # Stap 1 (Post): haal rows op, Stap 2: map naar Post modellen.
+    posts = [Post.from_row(row) for row in cursor.fetchall()]
     conn.close()
 
+    # Stap 3 (User/Post): geef modellen door aan de template voor weergave.
     return render_template(
         "profile/profile.html",
         profile_user=profile_user,
@@ -237,12 +246,15 @@ def edit_profile_page():
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM users WHERE id = ?", (session["user_id"],))
-    user = cursor.fetchone()
+    # Stap 1 (User): haal huidige user-row uit de database op.
+    user_row = cursor.fetchone()
 
-    if not user:
+    if not user_row:
         conn.close()
         session.clear()
         return redirect(url_for("login"))
+    # Stap 2 (User): maak een User model voor de form weergave.
+    user = User.from_row(user_row)
 
     if request.method == "POST":
         # Valideer en update profielgegevens.
@@ -265,7 +277,7 @@ def edit_profile_page():
             return redirect(url_for("edit_profile_page"))
 
         # Optioneel profielfoto vervangen.
-        photo_path = user["profile_photo"]
+        photo_path = user.profile_photo
         if profile_photo and profile_photo.filename:
             delete_file_if_exists(photo_path)
             photo_path = save_profile_photo(profile_photo)
@@ -313,9 +325,11 @@ def feed():
             ON posts.id = user_likes.post_id AND user_likes.user_id = ?
         ORDER BY posts.created_at DESC
     """, (session["user_id"],))
-    posts = cursor.fetchall()
+    # Stap 1 (Post): haal feed rows op, Stap 2: map naar Post modellen.
+    posts = [Post.from_row(row) for row in cursor.fetchall()]
     conn.close()
 
+    # Stap 3 (Post): geef modellen door aan de template voor weergave.
     return render_template("feed/feed.html", posts=posts)
 
 # -----------------------------
@@ -417,14 +431,17 @@ def edit_post(post_id):
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM posts WHERE id = ?", (post_id,))
-    post = cursor.fetchone()
+    # Stap 1 (Post): haal post-row op uit de database.
+    post_row = cursor.fetchone()
 
-    if not post:
+    if not post_row:
         conn.close()
         flash("Post niet gevonden.", "danger")
         return redirect(url_for("profile"))
+    # Stap 2 (Post): maak een Post model van de row.
+    post = Post.from_row(post_row)
 
-    if post["user_id"] != session["user_id"]:
+    if post.user_id != session["user_id"]:
         conn.close()
         flash("Je kunt deze post niet bewerken.", "danger")
         return redirect(url_for("profile"))
@@ -443,6 +460,7 @@ def edit_post(post_id):
         return redirect(url_for("profile"))
 
     conn.close()
+    # Stap 3 (Post): geef het model door aan de template.
     return render_template("posts/edit.html", post=post)
 
 
@@ -456,20 +474,23 @@ def delete_post(post_id):
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM posts WHERE id = ?", (post_id,))
-    post = cursor.fetchone()
+    # Stap 1 (Post): haal post-row op uit de database.
+    post_row = cursor.fetchone()
 
-    if not post:
+    if not post_row:
         conn.close()
         flash("Post niet gevonden.", "danger")
         return redirect(url_for("profile"))
+    # Stap 2 (Post): maak een Post model voor logica/cleanup.
+    post = Post.from_row(post_row)
 
-    if post["user_id"] != session["user_id"] and session["user_name"] != "admin":
+    if post.user_id != session["user_id"] and session["user_name"] != "admin":
         conn.close()
         flash("Je kunt deze post niet verwijderen.", "danger")
         return redirect(url_for("profile"))
 
     # Verwijder likes en post, daarna het bestand.
-    media_path = post["media_path"]
+    media_path = post.media_path
     cursor.execute("DELETE FROM post_likes WHERE post_id = ?", (post_id,))
     cursor.execute("DELETE FROM posts WHERE id = ?", (post_id,))
     conn.commit()

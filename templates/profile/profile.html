@@ -4,11 +4,12 @@
 <div class="container mt-4" style="max-width: 900px;">
   <!-- Hoofdcontainer voor het profieloverzicht -->
 
-  {% if profile_user['profile_photo'] %}
-    {% set avatar_url = url_for('static', filename=profile_user['profile_photo']) %}
+  {# Data komt uit app.py -> User model (profile_user) #}
+  {% if profile_user.profile_photo %}
+    {% set avatar_url = url_for('static', filename=profile_user.profile_photo) %}
     <!-- Gebruik de profielfoto van de gebruiker -->
   {% else %}
-    {% set avatar_url = url_for('static', filename='default.png') %}
+    {% set avatar_url = url_for('static', filename='default/default.png') %}
     <!-- Fallback naar standaard profielfoto -->
   {% endif %}
 
@@ -24,12 +25,12 @@
     <div class="ms-4 flex-grow-1">
       <!-- Gebruikersinformatie -->
 
-      <h3>{{ profile_user['username'] }}</h3>
+      <h3>{{ profile_user.username }}</h3>
       <!-- Gebruikersnaam -->
 
       <div class="user-wallet-hash">
         <span class="user-wallet-label">Wallet</span>
-        <code>{{ profile_user['wallet_hash'] }}</code>
+        <code>{{ profile_user.wallet_hash }}</code>
         <!-- Publieke wallet-hash van de gebruiker -->
       </div>
 
@@ -54,8 +55,8 @@
 
   <div class="mt-3">
     <!-- Bio sectie -->
-    <strong>{{ profile_user['username'] }}</strong><br>
-    {{ profile_user['bio'] or "Nog geen bio toegevoegd." }}
+    <strong>{{ profile_user.username }}</strong><br>
+    {{ profile_user.bio or "Nog geen bio toegevoegd." }}
   </div>
 
   <hr>
@@ -63,7 +64,8 @@
   <div class="row g-3 profile-post-grid">
     <!-- Grid met posts van de gebruiker -->
 
-    {% if posts %}
+  {# Data komt uit app.py -> Post modellen (posts) #}
+  {% if posts %}
       {% for post in posts %}
         <!-- Eén postkaart -->
         <div class="col-12 col-sm-6 col-md-4">
@@ -71,23 +73,23 @@
 
             <div class="profile-post-media">
               <!-- Afbeelding of video -->
-              {% if post["media_type"] == "image" %}
-                <img src="{{ url_for('static', filename=post['media_path']) }}"
-                     alt="{{ post['title'] or 'Post afbeelding' }}">
+              {% if post.media_type == "image" %}
+                <img src="{{ url_for('static', filename=post.media_path) }}"
+                     alt="{{ post.title or 'Post afbeelding' }}">
               {% else %}
                 <video muted loop>
-                  <source src="{{ url_for('static', filename=post['media_path']) }}">
+                  <source src="{{ url_for('static', filename=post.media_path) }}">
                 </video>
               {% endif %}
             </div>
 
             <div class="profile-post-actions">
               <!-- Bewerken / verwijderen van post -->
-              <a href="{{ url_for('edit_post', post_id=post['id']) }}" class="btn btn-light btn-sm">
+              <a href="{{ url_for('edit_post', post_id=post.id) }}" class="btn btn-light btn-sm">
                 Edit
               </a>
               <form method="POST"
-                    action="{{ url_for('delete_post', post_id=post['id']) }}"
+                    action="{{ url_for('delete_post', post_id=post.id) }}"
                     onsubmit="return confirm('Weet je zeker dat je deze post wilt verwijderen?');">
                 <button type="submit" class="btn btn-light btn-sm">Delete</button>
               </form>

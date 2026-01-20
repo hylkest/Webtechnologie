@@ -18,7 +18,7 @@
         id="username"
         name="username"
         class="form-control"
-        value="{{ user['username'] }}"
+        value="{{ user.username }}"
         required
       >
       <!-- Gebruikersnaam is verplicht en vooraf ingevuld -->
@@ -32,7 +32,7 @@
         name="bio"
         rows="4"
         class="form-control"
-        placeholder="Vertel iets over jezelf">{{ user['bio'] or '' }}</textarea>
+        placeholder="Vertel iets over jezelf">{{ user.bio or '' }}</textarea>
       <!-- Optionele biografie van de gebruiker -->
     </div>
 
@@ -42,7 +42,7 @@
 
       <div class="mb-2">
         <img
-          src="{{ url_for('static', filename=user['profile_photo'] or 'default/default.png') }}"
+          src="{{ url_for('static', filename=user.profile_photo or 'default/default.png') }}"
           alt="Huidige profielfoto"
           class="rounded-circle"
           style="width: 80px; height: 80px; object-fit: cover;"

@@ -20,7 +20,7 @@
         class="form-control"
         id="title"
         name="title"
-        value="{{ post['title'] or '' }}"
+        value="{{ post.title or '' }}"
         placeholder="Titel van je post"
       >
       <!-- Toont bestaande titel (of leeg) -->
@@ -37,7 +37,7 @@
         name="caption"
         rows="4"
         placeholder="Wat wil je delen?"
-      >{{ post['caption'] or '' }}</textarea>
+      >{{ post.caption or '' }}</textarea>
       <!-- Toont bestaande caption (of leeg) -->
     </div>
 
