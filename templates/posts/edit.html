@@ -1,11 +1,20 @@
 {% include "includes/header.html" %}
+<!-- Laadt de vaste header (navigatie, styles, etc.) -->
 
 <div class="container mt-4" style="max-width: 600px;">
+  <!-- Container voor het bewerken van een post -->
+
   <h2 class="mb-4">Post bewerken</h2>
+  <!-- Pagina-titel -->
 
   <form method="POST">
+    <!-- Formulier om de post te updaten -->
+
+    <!-- TITLE INPUT -->
     <div class="mb-3">
       <label for="title" class="form-label">Titel</label>
+      <!-- Label voor de titel -->
+
       <input
         type="text"
         class="form-control"
@@ -14,10 +23,14 @@
         value="{{ post['title'] or '' }}"
         placeholder="Titel van je post"
       >
+      <!-- Toont bestaande titel (of leeg) -->
     </div>
 
+    <!-- CAPTION INPUT -->
     <div class="mb-3">
       <label for="caption" class="form-label">Beschrijving</label>
+      <!-- Label voor de beschrijving -->
+
       <textarea
         class="form-control"
         id="caption"
@@ -25,13 +38,19 @@
         rows="4"
         placeholder="Wat wil je delen?"
       >{{ post['caption'] or '' }}</textarea>
+      <!-- Toont bestaande caption (of leeg) -->
     </div>
 
+    <!-- ACTION BUTTONS -->
     <div class="d-flex gap-2">
       <button type="submit" class="btn btn-primary">Opslaan</button>
+      <!-- Slaat wijzigingen op -->
+
       <a href="{{ url_for('profile') }}" class="btn btn-outline-secondary">Annuleren</a>
+      <!-- Terug naar profiel zonder opslaan -->
     </div>
   </form>
 </div>
 
 {% include "includes/footer.html" %}
+<!-- Laadt de vaste footer -->
