@@ -157,6 +157,11 @@
     overflow: auto;
 }
 
+.hash-list li {
+    display: grid;
+    gap: 8px;
+}
+
 @media (min-width: 992px) {
     .feed-layout .hash-panel,
     .feed-layout .network-panel {
