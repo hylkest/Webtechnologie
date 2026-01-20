@@ -514,30 +514,6 @@ def toggle_like(post_id):
     return jsonify({"liked": True, "like_count": like_count})
 # Aanmaken van de likes-tabel (voor bestaande databases).
 
-def ensure_post_likes_table():
-    """Create the post_likes table if it does not exist."""
-    # Idempotent aanmaken van de likes-tabel.
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute(
-        """
-        CREATE TABLE IF NOT EXISTS post_likes (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            post_id INTEGER NOT NULL,
-            user_id INTEGER NOT NULL,
-            created_at TEXT NOT NULL,
-            UNIQUE(post_id, user_id),
-            FOREIGN KEY (post_id) REFERENCES posts(id),
-            FOREIGN KEY (user_id) REFERENCES users(id)
-        )
-        """
-    )
-    conn.commit()
-    conn.close()
-
-
-ensure_post_likes_table()
-
 # -----------------------------
 # LOGOUT
 # -----------------------------
