@@ -1,0 +1,84 @@
+{% include "includes/header.html" %}
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <h1 class="text-center mb-4">Over InstaChain</h1>
+      
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Wat is InstaChain?</h5>
+          <p class="card-text">
+            InstaChain is een innovatief sociaal media platform dat de kracht van blockchain technologie combineert met de eenvoud van moderne sociale netwerken. 
+            Ons doel is om een decentrale, veilige en transparante omgeving te creëren waar gebruikers hun momenten kunnen delen zonder zorgen over privacy en data controle.
+          </p>
+          
+          <h6 class="mt-4">Onze Missie</h6>
+          <p>
+            Wij geloven in het geven van controle terug aan de gebruikers. Met InstaChain kun je:
+          </p>
+          <ul>
+            <li>Je data volledig in eigen handen houden</li>
+            <li>Transparante algoritmes ervaren zonder verborgen manipulatie</li>
+            <li>Directe verbindingen maken met andere gebruikers</li>
+            <li>Een veilige omgeving voor creatieve expressie</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Technologie</h5>
+          <p class="card-text">
+            InstaChain maakt gebruik van cutting-edge blockchain technologie om:
+          </p>
+          <ul>
+            <li><strong>Decentralisatie:</strong> Geen centrale servers die je data controleren</li>
+            <li><strong>Encryptie:</strong> End-to-end encryptie voor al je berichten en posts</li>
+            <li><strong>Smart Contracts:</strong> Automatische uitvoering van afspraken tussen gebruikers</li>
+            <li><strong>NFT Integratie:</strong> Tokeniseer je waardevolle content als digitale assets</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Het Team</h5>
+          <p class="card-text">
+            Ons team bestaat uit ervaren ontwikkelaars, blockchain experts en UX designers die gepassioneerd zijn over het hervormen van sociale media.
+          </p>
+          
+          <div class="row mt-4">
+            <div class="col-md-4 text-center">
+              <div class="mb-3">
+                <img src="{{ url_for('static', filename='default/smiling-young-middle-eastern-man-600nw-2063524544.webp') }}" class="rounded-circle" alt="Alice Johnson" style="width: 80px; height: 80px; object-fit: cover;">
+              </div>
+              <h6>Alice Johnson</h6>
+              <small class="text-muted">CEO & Founder</small>
+            </div>
+            <div class="col-md-4 text-center">
+              <div class="mb-3">
+                <img src="{{ url_for('static', filename='default/cto.jpg') }}" class="rounded-circle" alt="Bob Smith" style="width: 80px; height: 80px; object-fit: cover;">
+              </div>
+              <h6>Bob Smith</h6>
+              <small class="text-muted">CTO</small>
+            </div>
+            <div class="col-md-4 text-center">
+              <div class="mb-3">
+                <img src="{{ url_for('static', filename='default/jeffrey.png') }}" class="rounded-circle" alt="Carol Davis" style="width: 80px; height: 80px; object-fit: cover;">
+              </div>
+              <h6>Carol Davis</h6>
+              <small class="text-muted">Lead Designer</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-4">
+        <a href="{{ url_for('contact') }}" class="btn btn-primary">Neem contact met ons op</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include "includes/footer.html" %}

@@ -5,7 +5,7 @@
   {% if profile_user['profile_photo'] %}
     {% set avatar_url = url_for('static', filename=profile_user['profile_photo']) %}
   {% else %}
-    {% set avatar_url = 'https://via.placeholder.com/150' %}
+    {% set avatar_url = url_for('static', filename='default_profile.png') %}
   {% endif %}
 
   <div class="d-flex align-items-center">

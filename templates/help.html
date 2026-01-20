@@ -1,0 +1,171 @@
+{% include "includes/header.html" %}
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <h1 class="text-center mb-4">Help Center</h1>
+
+      <div class="row">
+        <!-- Chatbot Section -->
+        <div class="col-md-6 mb-4">
+          <div class="card shadow-sm h-100">
+            <div class="card-header bg-primary text-white">
+              <h5 class="card-title mb-0">
+                <i class="bi bi-robot"></i> InstaChain Assistant
+              </h5>
+            </div>
+            <div class="card-body d-flex flex-column">
+              <div id="chat-messages" class="flex-grow-1 mb-3" style="height: 300px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.375rem; padding: 10px; background-color: #f8f9fa;">
+                <div class="message bot-message mb-2">
+                  <strong>InstaChain Bot:</strong> Hallo! Hoe kan ik je helpen vandaag?
+                </div>
+              </div>
+              <div class="input-group">
+                <input type="text" id="chat-input" class="form-control" placeholder="Typ je vraag hier..." onkeypress="handleKeyPress(event)">
+                <button class="btn btn-primary" type="button" onclick="sendMessage()">
+                  Verstuur
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="col-md-6 mb-4">
+          <div class="card shadow-sm h-100">
+            <div class="card-header bg-success text-white">
+              <h5 class="card-title mb-0">
+                <i class="bi bi-question-circle"></i> Veelgestelde Vragen
+              </h5>
+            </div>
+            <div class="card-body">
+              <div class="accordion" id="faqAccordion">
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                      Hoe maak ik een account aan?
+                    </button>
+                  </h2>
+                  <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                      Klik op "Registreren" in de rechterbovenhoek en vul je gegevens in. Vergeet niet een profielfoto toe te voegen!
+                    </div>
+                  </div>
+                </div>
+
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                      Hoe upload ik een post?
+                    </button>
+                  </h2>
+                  <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                      Ga naar je profiel en klik op "Upload post". Selecteer een afbeelding of video en voeg een caption toe.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                      Wat is blockchain technologie?
+                    </button>
+                  </h2>
+                  <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                      Blockchain is een gedecentraliseerde database die transacties veilig en transparant opslaat. Bij InstaChain gebruiken we dit voor privacy en data controle.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                      Hoe verander ik mijn profielfoto?
+                    </button>
+                  </h2>
+                  <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                      Ga naar je profiel, klik op "Edit Profile" en upload een nieuwe foto in het profielfoto veld.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                      Hoe verwijder ik een post?
+                    </button>
+                  </h2>
+                  <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                      Ga naar je profiel, vind de post die je wilt verwijderen en klik op de "Delete" knop. Bevestig de actie.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">
+                      Wat gebeurt er met mijn data?
+                    </button>
+                  </h2>
+                  <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                      Bij InstaChain blijft je data volledig in jouw handen. We gebruiken blockchain technologie om je privacy te waarborgen.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-4">
+        <p class="text-muted">Kun je je vraag hier niet vinden? <a href="{{ url_for('contact') }}">Neem contact met ons op</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const messages = document.getElementById('chat-messages');
+
+  if (input.value.trim() !== '') {
+    // Add user message
+    const userMessage = document.createElement('div');
+    userMessage.className = 'message user-message mb-2 text-end';
+    userMessage.innerHTML = '<strong>Jij:</strong> ' + input.value;
+    messages.appendChild(userMessage);
+
+    // Clear input
+    input.value = '';
+
+    // Add bot response after a short delay
+    setTimeout(() => {
+      const botMessage = document.createElement('div');
+      botMessage.className = 'message bot-message mb-2';
+      botMessage.innerHTML = '<strong>InstaChain Bot:</strong> Chatbot is momenteel onder constructie. Bekijk onze FAQ hieronder voor hulp!';
+      messages.appendChild(botMessage);
+
+      // Scroll to bottom
+      messages.scrollTop = messages.scrollHeight;
+    }, 500);
+
+    // Scroll to bottom
+    messages.scrollTop = messages.scrollHeight;
+  }
+}
+
+function handleKeyPress(event) {
+  if (event.key === 'Enter') {
+    sendMessage();
+  }
+}
+</script>
+
+{% include "includes/footer.html" %}

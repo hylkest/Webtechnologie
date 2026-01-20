@@ -113,9 +113,7 @@ def delete_file_if_exists(relative_path):
 # -----------------------------
 @app.route("/")
 def home():
-    if "user_id" not in session:
-        return redirect(url_for("login"))
-    return redirect(url_for("feed"))
+    return render_template("landing.html")
 
 # -----------------------------
 # REGISTER
@@ -145,6 +143,8 @@ def register():
 
         hashed_password = generate_password_hash(password)
         photo_path = save_profile_photo(profile_photo)
+        if photo_path is None:
+            photo_path = "default_profile.png"
         cursor.execute(
             """
             INSERT INTO users (username, email, password, bio, profile_photo)
@@ -152,10 +152,14 @@ def register():
             """,
             (username, email, hashed_password, "", photo_path)
         )
+        user_id = cursor.lastrowid
         conn.commit()
         conn.close()
 
-        return redirect(url_for("login"))
+        session["user_id"] = user_id
+        session["user_name"] = username
+
+        return redirect(url_for("profile"))
 
     return render_template("auth/register.html")
 
@@ -300,6 +304,27 @@ def feed():
     return render_template("feed/feed.html", posts=posts)
 
 # -----------------------------
+# CONTACT
+# -----------------------------
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
+
+# -----------------------------
+# ABOUT
+# -----------------------------
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+# -----------------------------
+# HELP CENTER
+# -----------------------------
+@app.route("/help")
+def help_center():
+    return render_template("help.html")
+
+# -----------------------------
 # NEW POST PAGE
 # -----------------------------
 @app.route("/posts/new")
@@ -409,7 +434,7 @@ def delete_post(post_id):
         flash("Post niet gevonden.", "danger")
         return redirect(url_for("profile"))
 
-    if post["user_id"] != session["user_id"]:
+    if post["user_id"] != session["user_id"] and session["user_name"] != "admin":
         conn.close()
         flash("Je kunt deze post niet verwijderen.", "danger")
         return redirect(url_for("profile"))
@@ -423,7 +448,10 @@ def delete_post(post_id):
     delete_file_if_exists(media_path)
 
     flash("Post verwijderd.", "success")
-    return redirect(url_for("profile"))
+    if request.referrer and 'feed' in request.referrer:
+        return redirect(url_for("feed"))
+    else:
+        return redirect(url_for("profile"))
 
 
 @app.route("/posts/<int:post_id>/like", methods=["POST"])
