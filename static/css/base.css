@@ -1,3 +1,306 @@
+/* Base theme variables (all pages) */
+:root {
+    --theme-bg: #0b0d0f;
+    --theme-surface: #121518;
+    --theme-surface-alt: #171b1f;
+    --theme-border: #1e2a2e;
+    --theme-accent: #1fe3c6;
+    --theme-accent-strong: #09b99d;
+    --theme-cyber-blue: #37e6ff;
+    --theme-cyber-blue-strong: #10c7f5;
+    --theme-text: #e7f6f4;
+    --theme-muted: #91a3a6;
+}
+
+/* Global body background/typography (all pages) */
+body {
+    background-color: var(--theme-bg);
+    background-image:
+        radial-gradient(circle at 12% 10%, rgba(31, 227, 198, 0.12), transparent 40%),
+        radial-gradient(circle at 88% 12%, rgba(31, 227, 198, 0.08), transparent 45%),
+        linear-gradient(120deg, rgba(14, 18, 20, 0.9), rgba(9, 12, 14, 0.9)),
+        repeating-linear-gradient(135deg, rgba(31, 227, 198, 0.06) 0 1px, transparent 1px 20px);
+    color: var(--theme-text);
+    font-family: "Space Grotesk", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Shared navbar styling (includes/header.html) */
+.navbar.bg-body-tertiary,
+.navbar {
+    background: rgba(11, 13, 15, 0.9) !important;
+    border-bottom: 1px solid var(--theme-border);
+    backdrop-filter: blur(10px);
+}
+
+.navbar .navbar-brand,
+.navbar .nav-link {
+    color: var(--theme-text) !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus {
+    color: var(--theme-accent) !important;
+}
+
+.navbar .navbar-toggler {
+    border-color: var(--theme-border);
+}
+
+.navbar .navbar-toggler-icon {
+    filter: invert(1);
+}
+
+/* Shared form controls (contact/help/posts) */
+.form-control,
+.form-select,
+.form-control:focus,
+.form-select:focus {
+    background: var(--theme-surface-alt);
+    border-color: var(--theme-border);
+    color: var(--theme-text);
+}
+
+.form-control::placeholder {
+    color: rgba(145, 163, 166, 0.8);
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(31, 227, 198, 0.2);
+}
+
+.input-group .btn {
+    box-shadow: none;
+}
+
+/* Help page (help.html): chat area */
+#chat-messages {
+    background: var(--theme-surface-alt) !important;
+    color: var(--theme-text);
+    border-color: var(--theme-border) !important;
+}
+
+#chat-messages strong {
+    color: var(--theme-cyber-blue);
+}
+
+/* Help page (help.html): FAQ accordion */
+.accordion-item {
+    background: var(--theme-surface);
+    border: 1px solid var(--theme-border);
+}
+
+.accordion-button {
+    background: var(--theme-surface-alt);
+    color: var(--theme-text);
+}
+
+.accordion-button:not(.collapsed) {
+    background: #0e2023;
+    color: var(--theme-cyber-blue);
+    box-shadow: inset 0 -1px 0 var(--theme-border);
+}
+
+.accordion-button::after {
+    filter: invert(1);
+}
+
+.accordion-body {
+    background: var(--theme-surface);
+    color: var(--theme-text);
+}
+
+/* Global links and code (all pages) */
+a {
+    color: var(--theme-accent);
+}
+
+a:hover {
+    color: var(--theme-accent-strong);
+}
+
+code {
+    font-family: "JetBrains Mono", "Consolas", "Courier New", monospace;
+}
+
+/* Shared cards/panels (about/help/feed/profile) */
+.card,
+.profile-post-card,
+.blogpost,
+/* Feed page (feed/feed.html): hash + network side panels */
+.hash-panel,
+.network-panel {
+    background: var(--theme-surface);
+    border-color: var(--theme-border);
+}
+
+.text-muted {
+    color: var(--theme-muted) !important;
+}
+
+/* Shared buttons (all pages) */
+.btn-primary {
+    background: var(--theme-cyber-blue);
+    border-color: var(--theme-cyber-blue);
+    color: #061012;
+    font-weight: 600;
+    box-shadow: 0 0 14px rgba(55, 230, 255, 0.3);
+}
+
+.btn-primary:hover {
+    background: var(--theme-cyber-blue-strong);
+    border-color: var(--theme-cyber-blue-strong);
+    color: #061012;
+    box-shadow: 0 0 20px rgba(55, 230, 255, 0.45);
+}
+
+.btn {
+    border-radius: 999px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35);
+}
+
+.btn-light {
+    background: transparent;
+    border-color: var(--theme-cyber-blue);
+    color: var(--theme-cyber-blue);
+    box-shadow: 0 0 14px rgba(55, 230, 255, 0.2);
+}
+
+.btn-light:hover {
+    background: var(--theme-cyber-blue);
+    border-color: var(--theme-cyber-blue);
+    color: #061012;
+    box-shadow: 0 0 20px rgba(55, 230, 255, 0.4);
+}
+
+.btn-outline-light {
+    border-color: var(--theme-cyber-blue);
+    color: var(--theme-cyber-blue);
+    box-shadow: 0 0 14px rgba(55, 230, 255, 0.2);
+}
+
+.btn-outline-light:hover {
+    background: var(--theme-cyber-blue);
+    color: #061012;
+    box-shadow: 0 0 20px rgba(55, 230, 255, 0.4);
+}
+
+.btn-outline-dark {
+    border-color: rgba(55, 230, 255, 0.35);
+    color: var(--theme-cyber-blue);
+    background: transparent;
+    box-shadow: 0 0 12px rgba(55, 230, 255, 0.18);
+}
+
+.btn-outline-dark:hover {
+    background: var(--theme-cyber-blue);
+    border-color: var(--theme-cyber-blue-strong);
+    color: #061012;
+    box-shadow: 0 0 20px rgba(55, 230, 255, 0.4);
+}
+
+.btn-danger {
+    background: var(--theme-cyber-blue);
+    border-color: var(--theme-cyber-blue);
+    color: #061012;
+    box-shadow: 0 0 14px rgba(55, 230, 255, 0.3);
+}
+
+.btn-danger:hover {
+    background: var(--theme-cyber-blue-strong);
+    border-color: var(--theme-cyber-blue-strong);
+    color: #061012;
+    box-shadow: 0 0 20px rgba(55, 230, 255, 0.45);
+}
+
+.btn-secondary {
+    background: var(--theme-surface-alt);
+    border-color: var(--theme-border);
+    color: var(--theme-text);
+}
+
+.btn-secondary:hover {
+    border-color: var(--theme-cyber-blue);
+    color: var(--theme-cyber-blue);
+}
+
+.btn-cyber {
+    background: linear-gradient(135deg, rgba(55, 230, 255, 0.22), rgba(16, 199, 245, 0.12));
+    border: 1px solid var(--theme-cyber-blue);
+    color: var(--theme-cyber-blue);
+    font-weight: 600;
+    box-shadow: 0 0 0 1px rgba(55, 230, 255, 0.15), 0 10px 24px rgba(0, 0, 0, 0.45);
+}
+
+.btn-cyber:hover {
+    background: var(--theme-cyber-blue);
+    border-color: var(--theme-cyber-blue-strong);
+    color: #041417;
+    box-shadow: 0 0 18px rgba(55, 230, 255, 0.35);
+}
+
+.panel-outline,
+.card-outline,
+.blogpost,
+.hash-panel,
+.network-panel,
+.profile-post-card,
+.card {
+    position: relative;
+    border: 1px solid rgba(55, 230, 255, 0.25);
+    box-shadow: 0 0 0 1px rgba(55, 230, 255, 0.12), 0 18px 36px rgba(0, 0, 0, 0.35);
+}
+
+.panel-outline::before,
+.card-outline::before,
+.blogpost::before,
+.hash-panel::before,
+.network-panel::before,
+.profile-post-card::before,
+.card::before {
+    content: "";
+    position: absolute;
+    inset: 10px;
+    border: 1px solid rgba(55, 230, 255, 0.08);
+    pointer-events: none;
+}
+
+.panel-outline::after,
+.card-outline::after,
+.blogpost::after,
+.hash-panel::after,
+.network-panel::after,
+.profile-post-card::after,
+.card::after {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 18px;
+    width: 36px;
+    height: 4px;
+    background: var(--theme-cyber-blue);
+    box-shadow: 0 0 10px rgba(55, 230, 255, 0.6);
+}
+
+.bg-light {
+    background-color: #0f1417 !important;
+}
+
+.bg-primary {
+    background-color: #0f2a2a !important;
+}
+
+.bg-success {
+    background-color: #0f2a2a !important;
+}
+
+.card,
+.card-body {
+    color: var(--theme-text);
+}
+
+/* Feed page (index.html): basic feed container */
 .feed {
     display: flex;
     justify-content: center;
@@ -6,9 +309,11 @@
     flex-wrap: wrap;
 }
 
+/* Feed posts (index.html + feed/feed.html): post card shell */
+/* Feed posts (feed/feed.html): refined card layout */
 .blogpost {
     max-width: 500px;
-    border: 1px solid black;
+    border: 1px solid var(--theme-border);
     margin: 30px 0;
     border-radius: 20px;
 }
@@ -30,6 +335,7 @@
     }
 }
 
+/* Feed posts: header/title row */
 .blogpost-title {
     p {
         margin-bottom: 0;
@@ -37,14 +343,16 @@
     }
 }
 
+/* Feed posts (feed/feed.html): like/delete actions */
 .blogpost-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    border-top: 1px solid #eaeaea;
+    border-top: 1px solid var(--theme-border);
 }
 
+/* Feed posts (feed/feed.html): like button + count */
 .like-button {
     border: none;
     background: transparent;
@@ -53,22 +361,24 @@
     gap: 8px;
     align-items: center;
     cursor: pointer;
-    color: #333;
+    color: var(--theme-text);
     padding: 0;
 }
 
 .like-button.liked {
-    color: #e63946;
+    color: #ff6476;
 }
 
 .like-count {
     font-weight: 600;
 }
 
+/* Feed page (feed/feed.html): layout container */
 .feed-layout {
     padding: 32px 0 48px;
 }
 
+/* Feed page (feed/feed.html): post list */
 .feed-list {
     display: flex;
     flex-direction: column;
@@ -77,26 +387,27 @@
 
 .blogpost {
     max-width: 100%;
-    border: 1px solid #e6ecf3;
+    border: 1px solid var(--theme-border);
     margin: 0;
     border-radius: 18px;
     overflow: hidden;
-    background: #ffffff;
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    background: var(--theme-surface);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.35);
 }
 
 .blogpost-title p {
     margin-bottom: 0;
     padding: 14px 18px;
     font-weight: 600;
-    color: #0f172a;
-    background: #f5f7fb;
+    color: var(--theme-text);
+    background: var(--theme-surface-alt);
     display: flex;
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
 }
 
+/* Feed posts: media block */
 .blogpost-post {
     display: block;
 }
@@ -107,22 +418,23 @@
     display: block;
 }
 
+/* Feed posts: caption/content block */
 .blogpost-content {
     padding: 14px 18px;
 }
 
 .blogpost-actions {
     padding: 12px 18px;
-    background: #f9fafc;
+    background: var(--theme-surface-alt);
 }
 
 .hash-panel,
 .network-panel {
     border-radius: 18px;
-    background: #f5f8fc;
-    border: 1px solid #e2e8f0;
+    background: var(--theme-surface);
+    border: 1px solid var(--theme-border);
     padding: 18px;
-    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.35);
 }
 
 .hash-panel-header,
@@ -138,12 +450,12 @@
     font-size: 0.75rem;
     letter-spacing: 0.08em;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--theme-text);
 }
 
 .hash-subtitle {
     font-size: 0.7rem;
-    color: #64748b;
+    color: var(--theme-muted);
 }
 
 .hash-list {
@@ -186,8 +498,8 @@
     display: block;
     padding: 8px 10px;
     border-radius: 10px;
-    background: #0b1220;
-    color: #c7f9cc;
+    background: #0a1416;
+    color: #72f2da;
     font-size: 0.78rem;
     letter-spacing: 0.02em;
 }
@@ -201,10 +513,11 @@
 .network-caption {
     margin-top: 12px;
     margin-bottom: 0;
-    color: #475569;
+    color: var(--theme-muted);
     font-size: 0.9rem;
 }
 
+/* Feed page (feed/feed.html): validators/nodes lists */
 .validator-list {
     list-style: none;
     margin: 0;
@@ -219,14 +532,14 @@
     justify-content: space-between;
     padding: 8px 10px;
     border-radius: 12px;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
+    background: var(--theme-surface-alt);
+    border: 1px solid var(--theme-border);
     font-size: 0.85rem;
 }
 
 .validator-name {
     font-weight: 600;
-    color: #0f172a;
+    color: var(--theme-text);
 }
 
 .validator-status {
@@ -236,20 +549,22 @@
     letter-spacing: 0.08em;
 }
 
+/* Feed page (feed/feed.html): section divider inside network panel */
 .network-section {
     margin-top: 16px;
     padding-top: 16px;
     border-top: 1px solid #e2e8f0;
 }
 
+/* Feed page (feed/feed.html): post hash strip */
 .post-hash {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
     padding: 10px 18px 14px;
-    border-top: 1px solid #e6ecf3;
-    background: #ffffff;
+    border-top: 1px solid var(--theme-border);
+    background: var(--theme-surface);
 }
 
 .post-hash-label {
@@ -257,17 +572,18 @@
     font-size: 0.7rem;
     letter-spacing: 0.08em;
     font-weight: 700;
-    color: #64748b;
+    color: var(--theme-muted);
 }
 
 .post-hash code {
     background: #0b1220;
-    color: #c7f9cc;
+    color: #72f2da;
     padding: 6px 10px;
     border-radius: 10px;
     font-size: 0.75rem;
 }
 
+/* Posts page (posts/new.html): post hash preview */
 .post-hash-preview {
     display: flex;
     align-items: center;
@@ -275,21 +591,22 @@
     gap: 12px;
     padding: 10px 12px;
     border-radius: 10px;
-    border: 1px dashed #cbd5f5;
-    background: #f8fafc;
+    border: 1px dashed #1f2f33;
+    background: var(--theme-surface-alt);
 }
 
 .post-hash-preview code {
     background: #0b1220;
-    color: #c7f9cc;
+    color: #72f2da;
     padding: 6px 10px;
     border-radius: 10px;
     font-size: 0.75rem;
 }
 
+/* Feed page (feed/feed.html): coin donation row */
 .post-coin {
     padding: 0 18px 18px;
-    background: #ffffff;
+    background: var(--theme-surface);
     display: flex;
     align-items: center;
     gap: 10px;
@@ -302,24 +619,26 @@
     font-weight: 600;
 }
 
+/* Feed page (feed/feed.html): coin icon + input */
 .coin-image {
     width: 28px;
     height: 28px;
     border-radius: 50%;
     object-fit: cover;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--theme-border);
 }
 
 .coin-input {
     max-width: 110px;
 }
 
+/* Feed/profile pages (feed/feed.html + profile/profile.html): wallet hash */
 .user-wallet-hash {
     display: flex;
     align-items: center;
     gap: 8px;
     margin-top: 6px;
-    color: #475569;
+    color: var(--theme-muted);
 }
 
 .user-wallet-label {
@@ -327,7 +646,7 @@
     font-size: 0.7rem;
     letter-spacing: 0.08em;
     font-weight: 700;
-    color: #64748b;
+    color: var(--theme-muted);
 }
 
 .user-wallet-inline {
@@ -336,15 +655,15 @@
     gap: 8px;
     padding: 4px 8px;
     border-radius: 999px;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
+    background: var(--theme-surface);
+    border: 1px solid var(--theme-border);
     font-weight: 500;
 }
 
 .user-wallet-inline code,
 .user-wallet-hash code {
     background: #0b1220;
-    color: #c7f9cc;
+    color: #72f2da;
     padding: 4px 8px;
     border-radius: 999px;
     font-size: 0.7rem;

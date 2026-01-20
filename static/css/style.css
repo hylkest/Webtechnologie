@@ -1,4 +1,4 @@
-/* Header */
+/* Shared layout (static/legacy pages): header + navigation */
 header {
     background: grey;
     margin-top: 0;
@@ -23,14 +23,14 @@ header {
     }
 }
 
-/* BODY */
+/* Shared layout (static/legacy pages): base body */
 body {
     margin: 0;
     font-family: "Roboto", sans-serif;
     padding-bottom: 90px;
 }
 
-/* Containers */
+/* Shared layout (static/legacy pages): containers */
 .container {
     padding: 0 20px 0 20px;
 }
@@ -42,7 +42,7 @@ body {
     padding: 20px 0;
 }
 
-/* 2 Columns block */
+/* Shared layout (static/legacy pages): column blocks */
 .one-column {
     margin: 0 auto;
     display: flex;
@@ -88,7 +88,7 @@ body {
     }
 }
 
-/* Buttons */
+/* Shared layout (static/legacy pages): buttons */
 .btn {
     text-decoration: none;
     color: white;
@@ -112,6 +112,7 @@ body {
     transition: 0.3s;
 }
 
+/* Shared layout (static/legacy pages): navbar list spacing */
 .navbar-navigation {
     margin-bottom: 0;
 }

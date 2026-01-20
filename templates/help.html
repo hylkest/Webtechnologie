@@ -21,8 +21,8 @@
                 </div>
               </div>
               <div class="input-group">
-                <input type="text" id="chat-input" class="form-control" placeholder="Typ je vraag hier..." onkeypress="handleKeyPress(event)">
-                <button class="btn btn-primary" type="button" onclick="sendMessage()">
+                <input type="text" id="chat-input" class="form-control" placeholder="Chat is momenteel uitgeschakeld" disabled>
+                <button class="btn btn-primary" type="button" disabled>
                   Verstuur
                 </button>
               </div>
@@ -129,44 +129,6 @@
     </div>
   </div>
 </div>
-
-<script>
-function sendMessage() {
-  const input = document.getElementById('chat-input');
-  const messages = document.getElementById('chat-messages');
-
-  if (input.value.trim() !== '') {
-    // Add user message
-    const userMessage = document.createElement('div');
-    userMessage.className = 'message user-message mb-2 text-end';
-    userMessage.innerHTML = '<strong>Jij:</strong> ' + input.value;
-    messages.appendChild(userMessage);
-
-    // Clear input
-    input.value = '';
-
-    // Add bot response after a short delay
-    setTimeout(() => {
-      const botMessage = document.createElement('div');
-      botMessage.className = 'message bot-message mb-2';
-      botMessage.innerHTML = '<strong>InstaChain Bot:</strong> Chatbot is momenteel onder constructie. Bekijk onze FAQ hieronder voor hulp!';
-      messages.appendChild(botMessage);
-
-      // Scroll to bottom
-      messages.scrollTop = messages.scrollHeight;
-    }, 500);
-
-    // Scroll to bottom
-    messages.scrollTop = messages.scrollHeight;
-  }
-}
-
-function handleKeyPress(event) {
-  if (event.key === 'Enter') {
-    sendMessage();
-  }
-}
-</script>
 
 {% if session.user_id %}
 {% include "includes/footer.html" %}
