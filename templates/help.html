@@ -168,4 +168,6 @@ function handleKeyPress(event) {
 }
 </script>
 
+{% if session.user_id %}
 {% include "includes/footer.html" %}
+{% endif %}

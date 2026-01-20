@@ -20,16 +20,13 @@
             </a>
           {% else %}
             <a href="{{ url_for('register') }}" class="btn btn-light btn-lg px-4">
-              <i class="bi bi-person-plus me-2"></i>Account Aanmaken
-            </a>
-            <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg px-4">
-              <i class="bi bi-box-arrow-in-right me-2"></i>Inloggen
+              <i class="bi bi-person-plus me-2"></i>Start
             </a>
           {% endif %}
         </div>
       </div>
       <div class="col-lg-6">
-        <img src="{{ url_for('static', filename='default/smiling-young-middle-eastern-man-600nw-2063524544.webp') }}"
+        <img src="{{ url_for('static', filename='default/block.jpg') }}"
              alt="InstaChain Platform"
              class="img-fluid rounded shadow"
              style="max-height: 400px;">
@@ -178,4 +175,6 @@
 }
 </style>
 
+{% if session.user_id %}
 {% include "includes/footer.html" %}
+{% endif %}

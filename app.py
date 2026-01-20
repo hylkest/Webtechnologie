@@ -22,6 +22,9 @@ def get_db():
     conn.row_factory = sqlite3.Row
     return conn
 
+def generate_wallet_hash():
+    return f"0x{uuid.uuid4().hex}"
+
 
 def ensure_post_likes_table():
     """Create the post_likes table if it does not exist."""
@@ -63,6 +66,8 @@ def ensure_user_profile_fields():
         cursor.execute("ALTER TABLE users ADD COLUMN bio TEXT DEFAULT ''")
     if "profile_photo" not in columns:
         cursor.execute("ALTER TABLE users ADD COLUMN profile_photo TEXT")
+    if "wallet_hash" not in columns:
+        cursor.execute("ALTER TABLE users ADD COLUMN wallet_hash TEXT")
     try:
         cursor.execute(
             "CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users(username)"
@@ -70,6 +75,14 @@ def ensure_user_profile_fields():
     except sqlite3.OperationalError:
         # Index creation can fail if duplicate usernames already exist.
         pass
+    cursor.execute("SELECT id, wallet_hash FROM users")
+    users = cursor.fetchall()
+    for user in users:
+        if not user["wallet_hash"]:
+            cursor.execute(
+                "UPDATE users SET wallet_hash = ? WHERE id = ?",
+                (generate_wallet_hash(), user["id"])
+            )
     conn.commit()
     conn.close()
 
@@ -147,10 +160,10 @@ def register():
             photo_path = "default_profile.png"
         cursor.execute(
             """
-            INSERT INTO users (username, email, password, bio, profile_photo)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO users (username, email, password, bio, profile_photo, wallet_hash)
+            VALUES (?, ?, ?, ?, ?, ?)
             """,
-            (username, email, hashed_password, "", photo_path)
+            (username, email, hashed_password, "", photo_path, generate_wallet_hash())
         )
         user_id = cursor.lastrowid
         conn.commit()
@@ -285,6 +298,7 @@ def feed():
         SELECT
             posts.*,
             COALESCE(users.username, 'Onbekende gebruiker') AS username,
+            users.wallet_hash AS wallet_hash,
             COALESCE(like_counts.like_count, 0) AS like_count,
             CASE WHEN user_likes.user_id IS NULL THEN 0 ELSE 1 END AS liked_by_current_user
         FROM posts

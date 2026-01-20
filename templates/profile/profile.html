@@ -17,6 +17,10 @@
 
     <div class="ms-4 flex-grow-1">
       <h3>{{ profile_user['username'] }}</h3>
+      <div class="user-wallet-hash">
+        <span class="user-wallet-label">Wallet</span>
+        <code>{{ profile_user['wallet_hash'] }}</code>
+      </div>
 
       <div class="d-flex mb-3">
         <div class="me-4"><strong>{{ posts|length }}</strong> posts</div>

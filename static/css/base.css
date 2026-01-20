@@ -64,3 +64,283 @@
 .like-count {
     font-weight: 600;
 }
+
+.feed-layout {
+    padding: 32px 0 48px;
+}
+
+.feed-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.blogpost {
+    max-width: 100%;
+    border: 1px solid #e6ecf3;
+    margin: 0;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.blogpost-title p {
+    margin-bottom: 0;
+    padding: 14px 18px;
+    font-weight: 600;
+    color: #0f172a;
+    background: #f5f7fb;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.blogpost-post {
+    display: block;
+}
+
+.blogpost-post img,
+.blogpost-post video {
+    width: 100%;
+    display: block;
+}
+
+.blogpost-content {
+    padding: 14px 18px;
+}
+
+.blogpost-actions {
+    padding: 12px 18px;
+    background: #f9fafc;
+}
+
+.hash-panel,
+.network-panel {
+    border-radius: 18px;
+    background: #f5f8fc;
+    border: 1px solid #e2e8f0;
+    padding: 18px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.hash-panel-header,
+.network-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+}
+
+.hash-title {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.hash-subtitle {
+    font-size: 0.7rem;
+    color: #64748b;
+}
+
+.hash-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 70vh;
+    overflow: auto;
+}
+
+@media (min-width: 992px) {
+    .feed-layout .hash-panel,
+    .feed-layout .network-panel {
+        position: fixed;
+        top: 90px;
+        width: 300px;
+        max-height: calc(100vh - 140px);
+        overflow: auto;
+    }
+
+    .feed-layout .hash-panel {
+        left: max(24px, calc((100vw - 1320px) / 2));
+    }
+
+    .feed-layout .network-panel {
+        right: max(24px, calc((100vw - 1320px) / 2));
+    }
+}
+
+
+.hash-list code {
+    display: block;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: #0b1220;
+    color: #c7f9cc;
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+}
+
+.network-image {
+    width: 100%;
+    border-radius: 14px;
+    display: block;
+}
+
+.network-caption {
+    margin-top: 12px;
+    margin-bottom: 0;
+    color: #475569;
+    font-size: 0.9rem;
+}
+
+.validator-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+}
+
+.validator-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-radius: 12px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    font-size: 0.85rem;
+}
+
+.validator-name {
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.validator-status {
+    color: #64748b;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+}
+
+.network-section {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.post-hash {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 18px 14px;
+    border-top: 1px solid #e6ecf3;
+    background: #ffffff;
+}
+
+.post-hash-label {
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    color: #64748b;
+}
+
+.post-hash code {
+    background: #0b1220;
+    color: #c7f9cc;
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+}
+
+.post-hash-preview {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px dashed #cbd5f5;
+    background: #f8fafc;
+}
+
+.post-hash-preview code {
+    background: #0b1220;
+    color: #c7f9cc;
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+}
+
+.post-coin {
+    padding: 0 18px 18px;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.post-coin-button {
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-weight: 600;
+}
+
+.coin-image {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #e2e8f0;
+}
+
+.coin-input {
+    max-width: 110px;
+}
+
+.user-wallet-hash {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+    color: #475569;
+}
+
+.user-wallet-label {
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    color: #64748b;
+}
+
+.user-wallet-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    font-weight: 500;
+}
+
+.user-wallet-inline code,
+.user-wallet-hash code {
+    background: #0b1220;
+    color: #c7f9cc;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+}
