@@ -1,5 +1,9 @@
 from database import get_db
 from werkzeug.security import generate_password_hash
+import uuid
+
+def generate_wallet_hash():
+    return f"0x{uuid.uuid4().hex}"
 
 def init_db():
     conn = get_db()
@@ -15,7 +19,8 @@ def init_db():
         email TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
         bio TEXT DEFAULT '',
-        profile_photo TEXT
+        profile_photo TEXT,
+        wallet_hash TEXT
     )
     """)
 
@@ -63,10 +68,10 @@ def init_db():
         hashed_password = generate_password_hash("admin")
         cursor.execute(
             """
-            INSERT INTO users (username, email, password, bio, profile_photo)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO users (username, email, password, bio, profile_photo, wallet_hash)
+            VALUES (?, ?, ?, ?, ?, ?)
             """,
-            ("admin", "admin@admin.nl", hashed_password, "", "default_profile.png")
+            ("admin", "admin@admin.nl", hashed_password, "", "default_profile.png", generate_wallet_hash())
         )
         print("Default user created: admin / admin@admin.nl / admin")
     else:
@@ -88,10 +93,10 @@ def init_db():
         if cursor.fetchone() is None:
             cursor.execute(
                 """
-                INSERT INTO users (username, email, password, bio, profile_photo)
-                VALUES (?, ?, ?, ?, ?)
+                INSERT INTO users (username, email, password, bio, profile_photo, wallet_hash)
+                VALUES (?, ?, ?, ?, ?, ?)
                 """,
-                (username, email, hashed_test_password, "", "default_profile.png")
+                (username, email, hashed_test_password, "", "default_profile.png", generate_wallet_hash())
             )
             print(f"Test user created: {username} / {email} / test")
         else:

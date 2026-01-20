@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
-import sqlite3
 import os
 from datetime import datetime
 import uuid
@@ -51,53 +50,6 @@ def save_profile_photo(profile_photo):
     filepath = os.path.join(PROFILE_UPLOAD_FOLDER, unique_name)
     profile_photo.save(filepath)
     return f"uploads/profile/{unique_name}"
-
-# -----------------------------
-# edit profile
-# -----------------------------
-# Database-migratie voor extra profielvelden.
-def ensure_user_profile_fields():
-    """Make sure the users table has profile-related columns and constraints."""
-    # Voeg nieuwe user-kolommen veilig toe op bestaande DBs.
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='users'"
-    )
-    if cursor.fetchone() is None:
-        conn.close()
-        return
-    cursor.execute("PRAGMA table_info(users)")
-    columns = {row["name"] for row in cursor.fetchall()}
-    # Voeg ontbrekende kolommen toe zonder data te verwijderen.
-    if "bio" not in columns:
-        cursor.execute("ALTER TABLE users ADD COLUMN bio TEXT DEFAULT ''")
-    if "profile_photo" not in columns:
-        cursor.execute("ALTER TABLE users ADD COLUMN profile_photo TEXT")
-    if "wallet_hash" not in columns:
-        cursor.execute("ALTER TABLE users ADD COLUMN wallet_hash TEXT")
-    try:
-        # Unieke usernames afdwingen via index.
-        cursor.execute(
-            "CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users(username)"
-        )
-    except sqlite3.OperationalError:
-        # Index creation can fail if duplicate usernames already exist.
-        pass
-    # Vul wallet hashes aan voor bestaande users.
-    cursor.execute("SELECT id, wallet_hash FROM users")
-    users = cursor.fetchall()
-    for user in users:
-        if not user["wallet_hash"]:
-            cursor.execute(
-                "UPDATE users SET wallet_hash = ? WHERE id = ?",
-                (generate_wallet_hash(), user["id"])
-            )
-    conn.commit()
-    conn.close()
-
-
-ensure_user_profile_fields()
 
 # -----------------------------
 # HOME
