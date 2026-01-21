@@ -10,7 +10,6 @@ class User:
 
     @classmethod
     def from_row(cls, row):
-        # Stap 2 (User): sqlite row -> User object met veilige velden.
         keys = set(row.keys())
         return cls(
             id=row["id"],

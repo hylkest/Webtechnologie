@@ -1,16 +1,11 @@
 {% include "includes/header.html" %}
-<!-- Laadt de vaste header (navigatie, styles, etc.) -->
 
 <div class="container mt-4" style="max-width: 650px;">
-  <!-- Container voor het bewerken van het gebruikersprofiel -->
 
   <h2 class="mb-4">Profiel bewerken</h2>
-  <!-- Pagina-titel -->
 
   <form method="POST" enctype="multipart/form-data">
-    <!-- Formulier voor het updaten van profielgegevens en profielfoto -->
 
-    <!-- USERNAME INPUT -->
     <div class="mb-3">
       <label for="username" class="form-label">Gebruikersnaam</label>
       <input
@@ -21,10 +16,9 @@
         value="{{ user.username }}"
         required
       >
-      <!-- Gebruikersnaam is verplicht en vooraf ingevuld -->
+
     </div>
 
-    <!-- BIO INPUT -->
     <div class="mb-3">
       <label for="bio" class="form-label">Bio</label>
       <textarea
@@ -33,10 +27,9 @@
         rows="4"
         class="form-control"
         placeholder="Vertel iets over jezelf">{{ user.bio or '' }}</textarea>
-      <!-- Optionele biografie van de gebruiker -->
+
     </div>
 
-    <!-- PROFILE PHOTO -->
     <div class="mb-3">
       <label class="form-label">Profielfoto</label>
 
@@ -50,22 +43,18 @@
       </div>
 
       <input type="file" name="profile_photo" class="form-control" accept="image/*">
-      <!-- Upload veld voor een nieuwe profielfoto -->
 
       <div class="form-text">Laat leeg om de huidige foto te behouden.</div>
-      <!-- Extra uitleg voor de gebruiker -->
+
     </div>
 
-    <!-- ACTION BUTTONS -->
     <div class="d-flex gap-2">
       <button type="submit" class="btn btn-primary">Opslaan</button>
-      <!-- Slaat profielwijzigingen op -->
 
       <a href="{{ url_for('profile') }}" class="btn btn-secondary">Annuleren</a>
-      <!-- Terug naar profiel zonder opslaan -->
+
     </div>
   </form>
 </div>
 
 {% include "includes/footer.html" %}
-<!-- Laadt de vaste footer -->

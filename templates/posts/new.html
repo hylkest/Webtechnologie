@@ -1,42 +1,32 @@
 {% include "includes/header.html" %}
-<!-- Laadt de vaste header (navigatie, styles, etc.) -->
 
 <div class="container d-flex justify-content-center mt-5">
-  <!-- Centreert de post-kaart op de pagina -->
 
   <div class="card shadow p-4" style="width: 420px; border-radius: 14px;">
-    <!-- Kaart die het post-formulier bevat -->
 
     <h5 class="text-center mb-4">Create new post</h5>
-    <!-- Titel van het formulier -->
 
-    <!-- MEDIA PREVIEW (image of video) -->
     <div class="mb-3 text-center">
-      <!-- Image preview (standaard verborgen) -->
+
       <img id="imagePreview"
            class="img-fluid d-none"
            style="max-height: 300px; object-fit: cover; border-radius: 10px;">
 
-      <!-- Video preview (standaard verborgen) -->
       <video id="videoPreview"
              class="w-100 d-none"
              style="max-height: 300px; border-radius: 10px;"
              controls></video>
     </div>
 
-    <!-- POST HASH PREVIEW (pseudo-blockchain visual) -->
     <div class="post-hash-preview mb-3">
       <span class="post-hash-label">Hash</span>
       <code>0000000000000000000a9f2c7d1b3e5f</code>
     </div>
 
-    <!-- POST FORM -->
     <form action="{{ url_for('create_post') }}"
           method="POST"
           enctype="multipart/form-data">
-      <!-- Stuurt post-data naar de Flask route create_post -->
 
-      <!-- FILE INPUT (image or video) -->
       <div class="mb-3">
         <input type="file"
                name="media"
@@ -44,32 +34,29 @@
                accept="image/*,video/*"
                required
                onchange="previewMedia(event)">
-        <!-- Selecteert media en triggert live preview -->
+
       </div>
 
-      <!-- TITLE INPUT -->
       <div class="mb-3">
         <input type="text"
                name="title"
                class="form-control"
                placeholder="Add a title (optional)">
-        <!-- Optionele titel voor de post -->
+
       </div>
 
-      <!-- CAPTION INPUT -->
       <div class="mb-3">
         <textarea name="caption"
                   class="form-control"
                   rows="3"
                   placeholder="Write a caption..."></textarea>
-        <!-- Beschrijving / tekst bij de post -->
+
       </div>
 
-      <!-- SUBMIT BUTTON -->
       <button type="submit" class="btn btn-primary w-100">
         Share
       </button>
-      <!-- Verstuurt de post -->
+
     </form>
 
   </div>
@@ -104,4 +91,3 @@ function previewMedia(event) {
 </script>
 
 {% include "includes/footer.html" %}
-<!-- Laadt de vaste footer -->

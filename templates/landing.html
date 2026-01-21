@@ -1,6 +1,5 @@
 {% include "includes/header.html" %}
 
-<!-- Hero Section -->
 <section class="hero bg-gradient-primary text-white py-5">
   <div class="container">
     <div class="row align-items-center">
@@ -35,7 +34,6 @@
   </div>
 </section>
 
-<!-- Features Section -->
 <section class="features py-5 bg-light">
   <div class="container">
     <div class="row text-center mb-5">
@@ -85,7 +83,6 @@
   </div>
 </section>
 
-<!-- How It Works Section -->
 <section class="how-it-works py-5">
   <div class="container">
     <div class="row text-center mb-5">
@@ -129,7 +126,6 @@
   </div>
 </section>
 
-<!-- CTA Section -->
 <section class="cta bg-primary text-white py-5">
   <div class="container text-center">
     <h2 class="display-5 fw-bold mb-4">Klaar om te beginnen?</h2>
@@ -153,27 +149,6 @@
     </div>
   </div>
 </section>
-
-<style>
-.hero {
-  background: linear-gradient(135deg, #0b0d0f 0%, #0f2a2a 55%, #12343a 100%);
-  min-height: 70vh;
-  display: flex;
-  align-items: center;
-}
-
-.features .card:hover {
-  transform: translateY(-5px);
-  transition: transform 0.3s ease;
-}
-
-.step-number {
-  height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-</style>
 
 {% if session.user_id %}
 {% include "includes/footer.html" %}

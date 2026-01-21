@@ -1,32 +1,34 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
-import os
 from datetime import datetime
+import os
 import uuid
+
+from flask import Flask, flash, jsonify, redirect, render_template, request, session, url_for
+from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
-from werkzeug.security import generate_password_hash, check_password_hash
+
 from database import get_db
-from models.user import User
 from models.post import Post
+from models.user import User
 
 # -----------------------------
 # APP SETUP
 # -----------------------------
-# Basisconfiguratie van de Flask-app en sessies.
 app = Flask(__name__)
 app.secret_key = "iets_super_randoms_hier"
 
 # -----------------------------
-# DATABASE
+# FILE STORAGE
 # -----------------------------
-# Databasepad en helpers om de sqlite verbinding te maken.
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "static", "uploads")
 PROFILE_UPLOAD_FOLDER = os.path.join(UPLOAD_FOLDER, "profile")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(PROFILE_UPLOAD_FOLDER, exist_ok=True)
 
+
 def generate_wallet_hash():
     # Genereer een pseudo wallet-id voor weergave.
     return f"0x{uuid.uuid4().hex}"
+
 
 def delete_file_if_exists(relative_path):
     # Verwijder een bestand uit de static-map als het bestaat.
@@ -41,6 +43,7 @@ def delete_file_if_exists(relative_path):
     if os.path.isfile(file_path):
         os.remove(file_path)
 
+
 def save_profile_photo(profile_photo):
     # Sla een profielfoto op en geef het relative pad terug.
     if not profile_photo or not profile_photo.filename:
@@ -51,20 +54,20 @@ def save_profile_photo(profile_photo):
     profile_photo.save(filepath)
     return f"uploads/profile/{unique_name}"
 
+
 # -----------------------------
 # HOME
 # -----------------------------
 @app.route("/")
 def home():
-    # Landingpagina.
     return render_template("landing.html")
 
+
 # -----------------------------
-# REGISTER
+# AUTH
 # -----------------------------
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    # Maak een nieuw gebruikersaccount aan.
     if request.method == "POST":
         username = request.form.get("username")
         email = request.form.get("email")
@@ -111,12 +114,9 @@ def register():
 
     return render_template("auth/register.html")
 
-# -----------------------------
-# LOGIN
-# -----------------------------
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    # Authenticeer een user en start een sessie.
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
@@ -125,23 +125,21 @@ def login():
         conn = get_db()
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
-        # Stap 1 (User): haal user-row uit de database op.
         user_row = cursor.fetchone()
         conn.close()
 
-        # Controleer of wachtwoord klopt.
+        # Check of user bestaat.
         if not user_row:
             flash("Ongeldige inloggegevens.", "danger")
             return redirect(url_for("login"))
-
-        # Stap 2 (User): maak een User model van de row.
+        # Map DB-row -> User model (attribute mapping).
         user = User.from_row(user_row)
+
         if not user.password or not check_password_hash(user.password, password):
             flash("Ongeldige inloggegevens.", "danger")
             return redirect(url_for("login"))
 
         # Sla user in sessie op.
-        # Stap 3 (User): gebruik het model in de sessie.
         session["user_id"] = user.id
         session["user_name"] = user.username
 
@@ -149,71 +147,72 @@ def login():
 
     return render_template("auth/login.html")
 
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
+
+
 # -----------------------------
 # PROFILE
 # -----------------------------
 @app.route("/profile")
 def profile():
-    # Toon het profiel en de posts van de huidige user.
     if "user_id" not in session:
         return redirect(url_for("login"))
 
-    # Haal profielinformatie en eigen posts op.
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM users WHERE id = ?", (session["user_id"],))
-    # Stap 1 (User): haal profiel-row uit de database op.
     profile_user_row = cursor.fetchone()
     if not profile_user_row:
         conn.close()
         session.clear()
         return redirect(url_for("login"))
-    # Stap 2 (User): maak een User model voor de template.
+
+    # Map DB-row -> User model (attribute mapping) voor de template.
     profile_user = User.from_row(profile_user_row)
     cursor.execute(
         "SELECT * FROM posts WHERE user_id = ? ORDER BY created_at DESC",
         (session["user_id"],)
     )
-    # Stap 1 (Post): haal rows op, Stap 2: map naar Post modellen.
+    # Map DB-rows -> Post modellen (attribute mapping) voor de template.
     posts = [Post.from_row(row) for row in cursor.fetchall()]
     conn.close()
 
-    # Stap 3 (User/Post): geef modellen door aan de template voor weergave.
     return render_template(
         "profile/profile.html",
         profile_user=profile_user,
         posts=posts
     )
 
-# -----------------------------
-# EDIT PROFILE
-# -----------------------------
+
 @app.route("/profile/edit", methods=["GET", "POST"])
 def edit_profile_page():
-    # Bewerk profielgegevens en foto.
     if "user_id" not in session:
         return redirect(url_for("login"))
 
-    # Laad huidige user uit de database.
+    # Haal user op uit db.
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM users WHERE id = ?", (session["user_id"],))
-    # Stap 1 (User): haal huidige user-row uit de database op.
     user_row = cursor.fetchone()
 
     if not user_row:
         conn.close()
         session.clear()
         return redirect(url_for("login"))
-    # Stap 2 (User): maak een User model voor de form weergave.
+    # Map DB-row -> User model (attribute mapping) voor de form.
     user = User.from_row(user_row)
 
+    # Valideer en update profielgegevens.
     if request.method == "POST":
-        # Valideer en update profielgegevens.
         new_username = request.form.get("username", "").strip()
         bio = request.form.get("bio", "").strip()
         profile_photo = request.files.get("profile_photo")
 
+        # Username mag niet leeg zijn.
         if not new_username:
             flash("Gebruikersnaam is verplicht.", "danger")
             conn.close()
@@ -223,12 +222,13 @@ def edit_profile_page():
             "SELECT id FROM users WHERE username = ? AND id != ?",
             (new_username, session["user_id"])
         )
+        # Username mag niet dubbel zijn.
         if cursor.fetchone():
             flash("Deze gebruikersnaam is al in gebruik.", "danger")
             conn.close()
             return redirect(url_for("edit_profile_page"))
 
-        # Optioneel profielfoto vervangen.
+        # Profielfoto vervangen.
         photo_path = user.profile_photo
         if profile_photo and profile_photo.filename:
             delete_file_if_exists(photo_path)
@@ -247,12 +247,12 @@ def edit_profile_page():
     conn.close()
     return render_template("profile/edit_profile.html", user=user)
 
+
 # -----------------------------
-# FEED (ALLE POSTS)
+# FEED
 # -----------------------------
 @app.route("/feed")
 def feed():
-    # Toon de globale feed met like-tellingen en wallet hashes.
     if "user_id" not in session:
         return redirect(url_for("login"))
 
@@ -277,60 +277,32 @@ def feed():
             ON posts.id = user_likes.post_id AND user_likes.user_id = ?
         ORDER BY posts.created_at DESC
     """, (session["user_id"],))
-    # Stap 1 (Post): haal feed rows op, Stap 2: map naar Post modellen.
+    # Map DB-rows -> Post modellen (attribute mapping) voor de feed.
     posts = [Post.from_row(row) for row in cursor.fetchall()]
     conn.close()
 
-    # Stap 3 (Post): geef modellen door aan de template voor weergave.
     return render_template("feed/feed.html", posts=posts)
 
-# -----------------------------
-# CONTACT
-# -----------------------------
-@app.route("/contact")
-def contact():
-    # Statische contactpagina.
-    return render_template("contact.html")
 
 # -----------------------------
-# ABOUT
-# -----------------------------
-@app.route("/about")
-def about():
-    # Statische about-pagina.
-    return render_template("about.html")
-
-# -----------------------------
-# HELP CENTER
-# -----------------------------
-@app.route("/help")
-def help_center():
-    # Statische help-pagina.
-    return render_template("help.html")
-
-# -----------------------------
-# NEW POST PAGE
+# POSTS
 # -----------------------------
 @app.route("/posts/new")
 def new_post():
-    # Toon uploadformulier voor een nieuwe post.
     if "user_id" not in session:
         return redirect(url_for("login"))
 
     return render_template("posts/new.html")
 
-# -----------------------------
-#   POST
-# -----------------------------
-# Aanmaken en beheren van posts.
+
 @app.route("/posts/create", methods=["POST"])
 def create_post():
-    # Sla een nieuwe post op en bewaar media op schijf.
     if "user_id" not in session:
         return redirect(url_for("login"))
 
-    # Lees het uploadbestand en de caption.
+    # Lees het uploadbestand, titel en caption.
     file = request.files.get("media")
+    title = request.form.get("title")
     caption = request.form.get("caption")
 
     if not file or file.filename == "":
@@ -351,16 +323,18 @@ def create_post():
         """
         INSERT INTO posts (
             user_id,
+            title,
             media_type,
             media_path,
             caption,
             post_hash,
             created_at
         )
-        VALUES (?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
         """,
         (
             session["user_id"],
+            title,
             media_type,
             f"uploads/{filename}",
             caption,
@@ -373,9 +347,9 @@ def create_post():
 
     return redirect(url_for("profile"))
 
+
 @app.route("/posts/<int:post_id>/edit", methods=["GET", "POST"])
 def edit_post(post_id):
-    # Bewerk de tekstvelden van een bestaande post.
     if "user_id" not in session:
         return redirect(url_for("login"))
 
@@ -383,14 +357,13 @@ def edit_post(post_id):
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM posts WHERE id = ?", (post_id,))
-    # Stap 1 (Post): haal post-row op uit de database.
     post_row = cursor.fetchone()
 
     if not post_row:
         conn.close()
         flash("Post niet gevonden.", "danger")
         return redirect(url_for("profile"))
-    # Stap 2 (Post): maak een Post model van de row.
+    # Map DB-row -> Post model (attribute mapping).
     post = Post.from_row(post_row)
 
     if post.user_id != session["user_id"]:
@@ -398,8 +371,8 @@ def edit_post(post_id):
         flash("Je kunt deze post niet bewerken.", "danger")
         return redirect(url_for("profile"))
 
+    # Update titel en caption.
     if request.method == "POST":
-        # Update titel en caption.
         title = request.form.get("title")
         caption = request.form.get("caption")
         cursor.execute(
@@ -410,15 +383,12 @@ def edit_post(post_id):
         conn.close()
         flash("Post bijgewerkt.", "success")
         return redirect(url_for("profile"))
-
     conn.close()
-    # Stap 3 (Post): geef het model door aan de template.
     return render_template("posts/edit.html", post=post)
 
 
 @app.route("/posts/<int:post_id>/delete", methods=["POST"])
 def delete_post(post_id):
-    # Verwijder een post en z'n likes, en verwijder daarna media.
     if "user_id" not in session:
         return redirect(url_for("login"))
 
@@ -426,14 +396,12 @@ def delete_post(post_id):
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM posts WHERE id = ?", (post_id,))
-    # Stap 1 (Post): haal post-row op uit de database.
     post_row = cursor.fetchone()
 
     if not post_row:
         conn.close()
         flash("Post niet gevonden.", "danger")
         return redirect(url_for("profile"))
-    # Stap 2 (Post): maak een Post model voor logica/cleanup.
     post = Post.from_row(post_row)
 
     if post.user_id != session["user_id"] and session["user_name"] != "admin":
@@ -451,19 +419,14 @@ def delete_post(post_id):
     delete_file_if_exists(media_path)
 
     flash("Post verwijderd.", "success")
-    if request.referrer and 'feed' in request.referrer:
+    if request.referrer and "feed" in request.referrer:
         return redirect(url_for("feed"))
-    else:
-        return redirect(url_for("profile"))
+    return redirect(url_for("profile"))
 
 
-# -----------------------------
-# post likes
-# -----------------------------
 @app.route("/posts/<int:post_id>/like", methods=["POST"])
 def toggle_like(post_id):
     # Endpoint waar de like-button naartoe POST (zie feed/feed.html).
-    # Toggle een like op een post voor de huidige user.
     if "user_id" not in session:
         return jsonify({"error": "Niet ingelogd."}), 401
 
@@ -512,16 +475,24 @@ def toggle_like(post_id):
     conn.close()
     # Geef terug: geliked + nieuw aantal likes.
     return jsonify({"liked": True, "like_count": like_count})
-# Aanmaken van de likes-tabel (voor bestaande databases).
+
 
 # -----------------------------
-# LOGOUT
+# STATIC PAGES
 # -----------------------------
-@app.route("/logout")
-def logout():
-    # Beëindig de huidige sessie.
-    session.clear()
-    return redirect(url_for("login"))
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
+
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+
+@app.route("/help")
+def help_center():
+    return render_template("help.html")
 
 
 # -----------------------------

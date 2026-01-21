@@ -6,12 +6,10 @@
     {% for post in posts %}
       <div class="blogpost">
 
-        <!-- USERNAME -->
         <div class="blogpost-title">
           <p>@{{ post.username }}</p>
         </div>
 
-        <!-- MEDIA -->
         <div class="blogpost-post">
           {% if post.media_type == "image" %}
             <img
@@ -30,7 +28,6 @@
           {% endif %}
         </div>
 
-        <!-- CAPTION -->
         <div class="blogpost-content">
           <p>
             <strong>{{ post.username }}</strong>

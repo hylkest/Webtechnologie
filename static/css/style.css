@@ -1,28 +1,3 @@
-/* Shared layout (static/legacy pages): header + navigation */
-header {
-    background: grey;
-    margin-top: 0;
-
-    .navigation {
-        ul {
-            padding: 20px;
-            margin-top: 0;
-            display: flex;
-            list-style-type: none;
-
-            .navlink {
-                padding-left: 10px;
-                padding-right: 10px;
-
-                a {
-                    text-decoration: none;
-                    color: white;
-                }
-            }
-        }
-    }
-}
-
 /* Shared layout (static/legacy pages): base body */
 body {
     margin: 0;
@@ -112,7 +87,3 @@ body {
     transition: 0.3s;
 }
 
-/* Shared layout (static/legacy pages): navbar list spacing */
-.navbar-navigation {
-    margin-bottom: 0;
-}

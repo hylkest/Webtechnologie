@@ -1,15 +1,10 @@
 {% include "includes/header.html" %}
-<!-- Algemene header met navbar, CSS en scripts -->
 
 <div class="container-xl feed-layout">
-  <!-- Hoofdcontainer voor de feed-layout -->
 
   <div class="row g-4 align-items-start">
-    <!-- Grid: links hashes, midden feed, rechts netwerk -->
 
-    <!-- LINKER SIDEBAR: HASHES -->
     <aside class="col-lg-3 col-12 order-lg-1 order-2">
-      <!-- Sidebar met blockchain-achtige hash lijst -->
 
       <div class="hash-panel">
         <div class="hash-panel-header">
@@ -18,7 +13,7 @@
         </div>
 
         <ul class="hash-list">
-          <!-- Statische lijst van hashes (placeholder voor blockchain feed) -->
+
           <li>
                 <code>0000000000000000000a1f8c7a2b93e1</code>
                 <code>0000000000000000000a9f2c7d1b3e5f</code>
@@ -36,46 +31,40 @@
                 <code>00000000000000000002f7d4c9b1e53c</code>
                 <code>0000000000000000000e6a19c3d2b7f5</code>
           </li>
-          <!-- … herhaald -->
+
         </ul>
       </div>
     </aside>
 
-    <!-- MIDDEN: FEED -->
     <main class="col-lg-6 col-12 order-lg-2 order-1">
-      <!-- Centrale feed met posts -->
 
       <div class="feed-list">
         {% if posts %}
           {% for post in posts %}
             <div class="blogpost">
-              <!-- Eén post -->
 
-              <!-- GEBRUIKER -->
               <div class="blogpost-title">
                 <p>
                   @{{ post.username }}
-                  <!-- Gebruikersnaam -->
 
                   <span class="user-wallet-inline">
-                    <!-- Wallet-hash van gebruiker -->
+
                     <span class="user-wallet-label">Wallet</span>
                     <code>{{ post.wallet_hash }}</code>
                   </span>
                 </p>
               </div>
 
-              <!-- MEDIA (IMAGE / VIDEO) -->
               <div class="blogpost-post">
                 {% if post.media_type == "image" %}
-                  <!-- Afbeelding -->
+
                   <img
                     src="{{ url_for('static', filename=post.media_path) }}"
                     alt="Post image"
                     loading="lazy"
                   >
                 {% elif post.media_type == "video" %}
-                  <!-- Video -->
+
                   <video controls preload="metadata">
                     <source
                       src="{{ url_for('static', filename=post.media_path) }}"
@@ -85,7 +74,6 @@
                 {% endif %}
               </div>
 
-              <!-- CAPTION -->
               <div class="blogpost-content">
                 <p>
                   <strong>{{ post.username }}</strong>
@@ -95,9 +83,7 @@
                 </p>
               </div>
 
-              <!-- LIKE ACTIES -->
               <div class="blogpost-actions" data-post-id="{{ post.id }}">
-                <!-- Like-knop + teller -->
 
                 <button
                   type="button"
@@ -117,7 +103,6 @@
 
                 <span class="like-count">{{ post.like_count or 0 }}</span>
 
-                <!-- Alleen admin mag verwijderen -->
                 {% if session.user_name == "admin" %}
                   <form method="POST"
                         action="{{ url_for('delete_post', post_id=post.id) }}"
@@ -128,15 +113,12 @@
                 {% endif %}
               </div>
 
-              <!-- POST HASH -->
               <div class="post-hash">
-                <!-- Hash van deze post (pseudo-blockchain) -->
+
                 <code>HASH 0000000000000000000a9f2c7d1b3e5f</code>
               </div>
 
-              <!-- COIN DONATIE -->
               <div class="post-coin">
-                <!-- Stuur ChainCoins naar post -->
 
                 <img
                   src="{{ url_for('static', filename='default/coin.jpg') }}"
@@ -160,7 +142,7 @@
             </div>
           {% endfor %}
         {% else %}
-          <!-- Geen posts -->
+
           <p class="text-center text-muted mt-4">
             Nog geen posts.
           </p>
@@ -168,9 +150,7 @@
       </div>
     </main>
 
-    <!-- RECHTER SIDEBAR: NETWERK -->
     <aside class="col-lg-3 col-12 order-lg-3 order-3">
-      <!-- Blockchain visualisatie -->
 
       <div class="network-panel">
         <div class="network-panel-header">
@@ -188,7 +168,6 @@
           Nodes, blocks, and trust in one visual.
         </p>
 
-        <!-- VALIDATORS -->
         <div class="network-section">
           <div class="hash-panel-header">
             <span class="hash-title">Validators</span>
@@ -202,7 +181,6 @@
           </ul>
         </div>
 
-        <!-- NODES -->
         <div class="network-section">
           <div class="hash-panel-header">
             <span class="hash-title">Nodes</span>
@@ -258,7 +236,7 @@ document.addEventListener("DOMContentLoaded", function () {
           // Werk de like teller bij
           if (countEl) {
             countEl.textContent = data.like_count;
-          }                                
+          }
         })
         .catch(function (error) {
           // Fout loggen als de request mislukt

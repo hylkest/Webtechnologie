@@ -1,54 +1,46 @@
 {% include "includes/header.html" %}
-<!-- Laadt de vaste header (CSS, navbar, etc.) -->
 
 <div class="container min-vh-100 d-flex justify-content-center align-items-center">
-  <!-- Volledige hoogte container, centreert inhoud horizontaal en verticaal -->
 
   <div class="row w-100 justify-content-center">
-    <!-- Bootstrap grid voor centreren -->
 
     <div class="col-12 col-sm-8 col-md-5 col-lg-4">
-      <!-- Responsieve kolom voor het registratieformulier -->
 
       <div class="card shadow-sm border-0 p-4 text-center">
-        <!-- Hoofdkaart met registratieformulier -->
 
         <h1 class="fs-1 mb-3" style="font-family: 'Segoe UI', sans-serif;">
           InstaClone
         </h1>
-        <!-- App-titel -->
 
         <p class="text-muted mb-4">
           Meld je aan om foto’s en momenten te delen.
         </p>
-        <!-- Korte introductietekst -->
 
         <form action="{{ url_for('register') }}"
               method="POST"
               class="text-start"
               enctype="multipart/form-data">
-          <!-- Registratieformulier (POST + bestand upload) -->
 
           <div class="mb-3">
-            <!-- Gebruikersnaam -->
+
             <label class="form-label">Gebruikersnaam</label>
             <input type="text" name="username" class="form-control" required>
           </div>
 
           <div class="mb-3">
-            <!-- E-mailadres -->
+
             <label class="form-label">E-mailadres</label>
             <input type="email" name="email" class="form-control" required>
           </div>
 
           <div class="mb-3">
-            <!-- Wachtwoord -->
+
             <label class="form-label">Wachtwoord</label>
             <input type="password" name="password" class="form-control" required>
           </div>
 
           <div class="mb-3">
-            <!-- Optionele profielfoto upload -->
+
             <label class="form-label">Profielfoto (optioneel)</label>
             <input type="file"
                    name="profile_photo"
@@ -59,12 +51,12 @@
           <button type="submit" class="btn btn-primary w-100 mt-2">
             Registreren
           </button>
-          <!-- Verstuur registratie -->
+
         </form>
       </div>
 
       <div class="card border-0 shadow-sm mt-3 p-3 text-center">
-        <!-- Login-verwijzing -->
+
         <span>
           Heb je al een account?
           <a href="{{ url_for('login') }}">Log in</a>

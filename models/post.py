@@ -29,7 +29,6 @@ class Post:
 
     @classmethod
     def from_row(cls, row):
-        # Stap 2 (Post): sqlite row -> Post object met optionele velden.
         keys = set(row.keys())
         return cls(
             id=row["id"],
