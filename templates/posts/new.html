@@ -62,32 +62,7 @@
   </div>
 </div>
 
-<script>
-/* Laat direct een preview zien van de gekozen image of video */
-function previewMedia(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  const img = document.getElementById("imagePreview");
-  const video = document.getElementById("videoPreview");
-
-  // Verberg beide previews eerst
-  img.classList.add("d-none");
-  video.classList.add("d-none");
-
-  const url = URL.createObjectURL(file);
-
-  // Toon image preview
-  if (file.type.startsWith("image")) {
-    img.src = url;
-    img.classList.remove("d-none");
-  }
-  // Toon video preview
-  else if (file.type.startsWith("video")) {
-    video.src = url;
-    video.classList.remove("d-none");
-  }
-}
-</script>
+<script src="{{ url_for('static', filename='js/new_post.js') }}"></script>
 
 {% include "includes/footer.html" %}
+
