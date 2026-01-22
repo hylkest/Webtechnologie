@@ -19,9 +19,11 @@ app.secret_key = "iets_super_randoms_hier"
 # -----------------------------
 # FILE STORAGE
 # -----------------------------
-UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "static", "uploads")
-PROFILE_UPLOAD_FOLDER = os.path.join(UPLOAD_FOLDER, "profile")
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+UPLOAD_ROOT = os.path.join(os.path.dirname(__file__), "static", "uploads")
+POSTS_UPLOAD_FOLDER = os.path.join(UPLOAD_ROOT, "posts")
+PROFILE_UPLOAD_FOLDER = os.path.join(UPLOAD_ROOT, "profile")
+os.makedirs(UPLOAD_ROOT, exist_ok=True)
+os.makedirs(POSTS_UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(PROFILE_UPLOAD_FOLDER, exist_ok=True)
 
 
@@ -259,6 +261,11 @@ def feed():
     # Haal alle posts op met gebruikersnaam en like-info.
     conn = get_db()
     cursor = conn.cursor()
+    # TL DR Pakt alle posts.
+    # Voegt de maker (username + wallet) toe.
+    #Telt totaal likes per post
+    # Checkt of de ingelogde user die post geliked heeft (1/0).
+    #Sorteert op nieuw → oud.
     cursor.execute("""
         SELECT
             posts.*,
@@ -310,7 +317,8 @@ def create_post():
 
     # Sla bestand op met veilige bestandsnaam.
     filename = secure_filename(file.filename)
-    filepath = os.path.join(UPLOAD_FOLDER, filename)
+    filepath = os.path.join(POSTS_UPLOAD_FOLDER, filename)
+    #schrijven
     file.save(filepath)
 
     # Bepaal mediatype op basis van extensie.
@@ -336,7 +344,7 @@ def create_post():
             session["user_id"],
             title,
             media_type,
-            f"uploads/{filename}",
+            f"uploads/posts/{filename}",
             caption,
             None,
             datetime.utcnow().isoformat()

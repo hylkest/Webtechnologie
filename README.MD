@@ -18,7 +18,7 @@
   - `User.from_row(...)` zet de DB-row om naar een User object
   - User data komt in de session en wordt gebruikt in templates
 - Profiel:
-  - `app.py` haalt user via `database.get_user_by_id(...)`
+  - `app.py` haalt user via `get_db()` met directe queries
   - User object wordt als `profile_user` aan `profile/profile.html` gegeven
   - Template toont velden met `profile_user.username`, `profile_user.profile_photo`
 
