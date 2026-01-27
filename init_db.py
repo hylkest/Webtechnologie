@@ -1,4 +1,9 @@
 from database import get_db
+from werkzeug.security import generate_password_hash
+import uuid
+
+def generate_wallet_hash():
+    return f"0x{uuid.uuid4().hex}"
 
 def init_db():
     conn = get_db()
@@ -14,7 +19,8 @@ def init_db():
         email TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
         bio TEXT DEFAULT '',
-        profile_photo TEXT
+        profile_photo TEXT,
+        wallet_hash TEXT
     )
     """)
 
@@ -55,20 +61,46 @@ def init_db():
     # -----------------------------
     cursor.execute(
         "SELECT id FROM users WHERE email = ?",
-        ("test@test.nl",)
+        ("admin@admin.nl",)
     )
 
     if cursor.fetchone() is None:
+        hashed_password = generate_password_hash("admin")
         cursor.execute(
             """
-            INSERT INTO users (username, email, password, bio, profile_photo)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO users (username, email, password, bio, profile_photo, wallet_hash)
+            VALUES (?, ?, ?, ?, ?, ?)
             """,
-            ("admin", "admin@admin.nl", "admin", "", None)
+            ("admin", "admin@admin.nl", hashed_password, "", "default_profile.png", generate_wallet_hash())
         )
         print("Default user created: admin / admin@admin.nl / admin")
     else:
         print("Default user already exists.")
+
+    # -----------------------------
+    # TEST USERS
+    # -----------------------------
+    test_users = [
+        ("test1", "test1@test1.nl"),
+        ("test2", "test2@test2.nl"),
+        ("test3", "test3@test3.nl")
+    ]
+
+    hashed_test_password = generate_password_hash("test")
+
+    for username, email in test_users:
+        cursor.execute("SELECT id FROM users WHERE email = ?", (email,))
+        if cursor.fetchone() is None:
+            cursor.execute(
+                """
+                INSERT INTO users (username, email, password, bio, profile_photo, wallet_hash)
+                VALUES (?, ?, ?, ?, ?, ?)
+                """,
+                (username, email, hashed_test_password, "", "default_profile.png", generate_wallet_hash())
+            )
+            print(f"Test user created: {username} / {email} / test")
+        else:
+            print(f"Test user {username} already exists.")
 
     conn.commit()
     conn.close()

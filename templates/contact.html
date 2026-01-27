@@ -1,0 +1,70 @@
+{% include "includes/header.html" %}
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <h1 class="text-center mb-4">Contact InstaClone</h1>
+
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Neem contact met ons op</h5>
+          <p class="card-text">
+            Heb je vragen, feedback of ondersteuning nodig? Neem gerust contact met ons op via de onderstaande informatie.
+          </p>
+
+          <div class="row mt-4">
+            <div class="col-md-6">
+              <h6>Contactgegevens</h6>
+              <ul class="list-unstyled">
+                <li><strong>Email:</strong> support@instaclone.com</li>
+                <li><strong>Telefoon:</strong> +1 (555) 123-4567</li>
+                <li><strong>Adres:</strong><br>
+                  123 Social Media Street<br>
+                  Silicon Valley, CA 94043<br>
+                  Verenigde Staten
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h6>Locatie</h6>
+              <div class="ratio ratio-16x9">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3172.331!2d-122.0842495!3d37.4220656!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808fb5b5e3e3e3e3%3A0x3e3e3e3e3e3e3e3e!2s123%20Social%20Media%20Street%2C%20Silicon%20Valley%2C%20CA%2094043!5e0!3m2!1sen!2sus!4v1703123456789!5m2!1sen!2sus"
+                  width="600"
+                  height="450"
+                  style="border:0;"
+                  allowfullscreen=""
+                  loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+              </div>
+            </div>
+          </div>
+
+          <hr>
+
+          <h6>Stuur ons een bericht</h6>
+          <form>
+            <div class="mb-3">
+              <label for="name" class="form-label">Naam</label>
+              <input type="text" class="form-control" id="name" required>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" required>
+            </div>
+            <div class="mb-3">
+              <label for="message" class="form-label">Bericht</label>
+              <textarea class="form-control" id="message" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Verstuur</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if session.user_id %}
+{% include "includes/footer.html" %}
+{% endif %}

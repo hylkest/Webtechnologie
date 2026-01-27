@@ -1,0 +1,358 @@
+/* Feed pages (index.html + feed/feed.html): container layout */
+.feed {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-content: center;
+    flex-wrap: wrap;
+}
+
+.feed-layout {
+    padding: 32px 0 48px;
+}
+
+.feed-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Feed pages: post card shell (.blogpost) */
+.blogpost {
+    max-width: 500px;
+    border: 1px solid var(--theme-border);
+    margin: 30px 0;
+    border-radius: 20px;
+}
+
+.blogpost-post {
+    display: flex;
+    justify-content: center;
+
+    img {
+        width: 100%;
+    }
+}
+
+.blogpost-content {
+    padding: 10px;
+
+    p {
+        margin-bottom: 0px;
+    }
+}
+
+.blogpost-title {
+    p {
+        margin-bottom: 0;
+        padding: 10px;
+    }
+}
+
+.blogpost-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 18px;
+    border-top: 1px solid var(--theme-border);
+}
+
+/* Feed pages (feed/feed.html): refined card layout */
+.blogpost {
+    max-width: 100%;
+    border: 1px solid var(--theme-border);
+    margin: 0;
+    border-radius: 18px;
+    overflow: hidden;
+    background: var(--theme-surface);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.35);
+}
+
+.blogpost-title p {
+    margin-bottom: 0;
+    padding: 14px 18px;
+    font-weight: 600;
+    color: var(--theme-text);
+    background: var(--theme-surface-alt);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.blogpost-post {
+    display: block;
+}
+
+.blogpost-post img,
+.blogpost-post video {
+    width: 100%;
+    display: block;
+}
+
+.blogpost-content {
+    padding: 14px 18px;
+}
+
+.blogpost-actions {
+    padding: 12px 18px;
+    background: var(--theme-surface-alt);
+}
+
+/* Feed pages (feed/feed.html): like button + count */
+.like-button {
+    border: none;
+    background: transparent;
+    font-weight: 600;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    cursor: pointer;
+    color: var(--theme-text);
+    padding: 0;
+}
+
+.like-button.liked {
+    color: #ff6476;
+}
+
+.like-count {
+    font-weight: 600;
+}
+
+/* Feed page (feed/feed.html): hash + network side panels */
+.hash-panel,
+.network-panel {
+    border-radius: 18px;
+    background: var(--theme-surface);
+    border: 1px solid var(--theme-border);
+    padding: 18px;
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.35);
+}
+
+.hash-panel-header,
+.network-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+}
+
+.hash-title {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    color: var(--theme-text);
+}
+
+.hash-subtitle {
+    font-size: 0.7rem;
+    color: var(--theme-muted);
+}
+
+.hash-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 70vh;
+    overflow: auto;
+}
+
+.hash-list li {
+    display: grid;
+    gap: 8px;
+}
+
+@media (min-width: 992px) {
+    .feed-layout .hash-panel,
+    .feed-layout .network-panel {
+        position: fixed;
+        top: 90px;
+        width: 300px;
+        max-height: calc(100vh - 140px);
+        overflow: auto;
+    }
+
+    .feed-layout .hash-panel {
+        left: max(24px, calc((100vw - 1320px) / 2));
+    }
+
+    .feed-layout .network-panel {
+        right: max(24px, calc((100vw - 1320px) / 2));
+    }
+}
+
+.hash-list code {
+    display: block;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: #0a1416;
+    color: #72f2da;
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+}
+
+.network-image {
+    width: 100%;
+    border-radius: 14px;
+    display: block;
+}
+
+.network-caption {
+    margin-top: 12px;
+    margin-bottom: 0;
+    color: var(--theme-muted);
+    font-size: 0.9rem;
+}
+
+/* Feed page (feed/feed.html): validators/nodes lists */
+.validator-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+}
+
+.validator-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-radius: 12px;
+    background: var(--theme-surface-alt);
+    border: 1px solid var(--theme-border);
+    font-size: 0.85rem;
+}
+
+.validator-name {
+    font-weight: 600;
+    color: var(--theme-text);
+}
+
+.validator-status {
+    color: #64748b;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+}
+
+/* Feed page (feed/feed.html): section divider inside network panel */
+.network-section {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* Feed page (feed/feed.html): post hash strip */
+.post-hash {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 10px 18px 14px;
+    border-top: 1px solid var(--theme-border);
+    background: var(--theme-surface);
+}
+
+.post-hash-label {
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    color: var(--theme-muted);
+}
+
+.post-hash code {
+    background: #0b1220;
+    color: #72f2da;
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
+/* Posts page (posts/new.html): post hash preview */
+.post-hash-preview {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px dashed #1f2f33;
+    background: var(--theme-surface-alt);
+}
+
+.post-hash-preview code {
+    background: #0b1220;
+    color: #72f2da;
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+}
+
+/* Feed page (feed/feed.html): coin donation row */
+.post-coin {
+    padding: 0 18px 18px;
+    background: var(--theme-surface);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.post-coin-button {
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-weight: 600;
+}
+
+.coin-image {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--theme-border);
+}
+
+.coin-input {
+    max-width: 110px;
+}
+
+/* Feed pages (feed/feed.html): card outline */
+.blogpost,
+.hash-panel,
+.network-panel {
+    position: relative;
+    border: 1px solid rgba(55, 230, 255, 0.25);
+    box-shadow: 0 0 0 1px rgba(55, 230, 255, 0.12), 0 18px 36px rgba(0, 0, 0, 0.35);
+}
+
+.blogpost::before,
+.hash-panel::before,
+.network-panel::before {
+    content: "";
+    position: absolute;
+    inset: 10px;
+    border: 1px solid rgba(55, 230, 255, 0.08);
+    pointer-events: none;
+}
+
+.blogpost::after,
+.hash-panel::after,
+.network-panel::after {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 18px;
+    width: 36px;
+    height: 4px;
+    background: var(--theme-cyber-blue);
+    box-shadow: 0 0 10px rgba(55, 230, 255, 0.6);
+}

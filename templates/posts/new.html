@@ -1,12 +1,13 @@
 {% include "includes/header.html" %}
 
 <div class="container d-flex justify-content-center mt-5">
+
   <div class="card shadow p-4" style="width: 420px; border-radius: 14px;">
 
     <h5 class="text-center mb-4">Create new post</h5>
 
-    <!-- PREVIEW -->
     <div class="mb-3 text-center">
+
       <img id="imagePreview"
            class="img-fluid d-none"
            style="max-height: 300px; object-fit: cover; border-radius: 10px;">
@@ -17,11 +18,15 @@
              controls></video>
     </div>
 
+    <div class="post-hash-preview mb-3">
+      <span class="post-hash-label">Hash</span>
+      <code>0000000000000000000a9f2c7d1b3e5f</code>
+    </div>
+
     <form action="{{ url_for('create_post') }}"
           method="POST"
           enctype="multipart/form-data">
 
-      <!-- FILE INPUT -->
       <div class="mb-3">
         <input type="file"
                name="media"
@@ -29,22 +34,23 @@
                accept="image/*,video/*"
                required
                onchange="previewMedia(event)">
+
       </div>
 
-      <!-- TITLE -->
       <div class="mb-3">
         <input type="text"
                name="title"
                class="form-control"
                placeholder="Add a title (optional)">
+
       </div>
 
-      <!-- CAPTION -->
       <div class="mb-3">
         <textarea name="caption"
                   class="form-control"
                   rows="3"
                   placeholder="Write a caption..."></textarea>
+
       </div>
 
       <button type="submit" class="btn btn-primary w-100">
@@ -56,27 +62,7 @@
   </div>
 </div>
 
-<script>
-function previewMedia(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  const img = document.getElementById("imagePreview");
-  const video = document.getElementById("videoPreview");
-
-  img.classList.add("d-none");
-  video.classList.add("d-none");
-
-  const url = URL.createObjectURL(file);
-
-  if (file.type.startsWith("image")) {
-    img.src = url;
-    img.classList.remove("d-none");
-  } else if (file.type.startsWith("video")) {
-    video.src = url;
-    video.classList.remove("d-none");
-  }
-}
-</script>
+<script src="{{ url_for('static', filename='js/new_post.js') }}"></script>
 
 {% include "includes/footer.html" %}
+

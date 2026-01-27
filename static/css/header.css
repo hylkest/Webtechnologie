@@ -1,0 +1,24 @@
+/* Legacy header layout (templates that use <header> + .navigation) */
+header {
+    background: grey;
+    margin-top: 0;
+
+    .navigation {
+        ul {
+            padding: 20px;
+            margin-top: 0;
+            display: flex;
+            list-style-type: none;
+
+            .navlink {
+                padding-left: 10px;
+                padding-right: 10px;
+
+                a {
+                    text-decoration: none;
+                    color: white;
+                }
+            }
+        }
+    }
+}

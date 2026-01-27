@@ -1,33 +1,28 @@
-.navbar-bottom {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: #fff;
-    border-top: 1px solid gainsboro;
-    z-index: 1030;
-    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.05);
+/* Navbar include (includes/_navbar.html): layout + colors */
+.navbar.bg-body-tertiary,
+.navbar {
+    background: rgba(11, 13, 15, 0.9) !important;
+    border-bottom: 1px solid var(--theme-border);
+    backdrop-filter: blur(10px);
 }
 
-.navbar-bottom .navbar-navigation {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    list-style: none;
-    padding: 10px 20px;
-    margin: 0;
+/* Navbar include: branding + links */
+.navbar .navbar-brand,
+.navbar .nav-link {
+    color: var(--theme-text) !important;
 }
 
-.navbar-bottom .navbar-bottom-link {
-    margin: 0;
+/* Navbar include: hover/focus states */
+.navbar .nav-link:hover,
+.navbar .nav-link:focus {
+    color: var(--theme-accent) !important;
 }
 
-.navbar-bottom .navbar-bottom-link a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* Navbar include: toggler styling */
+.navbar .navbar-toggler {
+    border-color: var(--theme-border);
 }
 
-.navbar-bottom svg {
-    display: block;
+.navbar .navbar-toggler-icon {
+    filter: invert(1);
 }

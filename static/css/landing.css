@@ -1,0 +1,21 @@
+/* Landing page (landing.html): hero section */
+.hero {
+    background: linear-gradient(135deg, #0b0d0f 0%, #0f2a2a 55%, #12343a 100%);
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+}
+
+/* Landing page (landing.html): feature card hover */
+.features .card:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease;
+}
+
+/* Landing page (landing.html): step number alignment */
+.step-number {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

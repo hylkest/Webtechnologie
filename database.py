@@ -9,19 +9,3 @@ def get_db():
     return conn
 
 
-def get_user_by_id(user_id):
-    conn = get_db()
-    cursor = conn.cursor()
-
-    cursor.execute(
-        """
-        SELECT id, username, email, bio, profile_photo
-        FROM users
-        WHERE id = ?
-        """,
-        (user_id,)
-    )
-    row = cursor.fetchone()
-    conn.close()
-
-    return row

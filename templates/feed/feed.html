@@ -1,106 +1,205 @@
 {% include "includes/header.html" %}
 
-<div class="container-md feed">
+<div class="container-xl feed-layout">
 
-  {% if posts %}
-    {% for post in posts %}
-      <div class="blogpost">
+  <div class="row g-4 align-items-start">
 
-        <!-- USERNAME -->
-        <div class="blogpost-title">
-          <p>@{{ post.username }}</p>
+    <aside class="col-lg-3 col-12 order-lg-1 order-2">
+
+      <div class="hash-panel">
+        <div class="hash-panel-header">
+          <span class="hash-title">Chain Hashes</span>
+          <span class="hash-subtitle">live snapshot</span>
         </div>
 
-        <!-- MEDIA -->
-        <div class="blogpost-post">
-          {% if post.media_type == "image" %}
-            <img
-              src="{{ url_for('static', filename=post.media_path) }}"
-              alt="Post image"
-              loading="lazy"
-            >
-          {% elif post.media_type == "video" %}
-            <video controls preload="metadata">
-              <source
-                src="{{ url_for('static', filename=post.media_path) }}"
-                type="video/mp4"
-              >
-              Your browser does not support the video tag.
-            </video>
-          {% endif %}
-        </div>
+        <ul class="hash-list">
 
-        <!-- CAPTION -->
-        <div class="blogpost-content">
-          <p>
-            <strong>{{ post.username }}</strong>
-            {% if post.caption %}
-              – {{ post.caption }}
-            {% endif %}
-          </p>
-        </div>
+          <li>
+                <code>0000000000000000000a1f8c7a2b93e1</code>
+                <code>0000000000000000000a9f2c7d1b3e5f</code>
+                <code>0000000000000000000c4d91ab6e2f8b</code>
+                <code>00000000000000000002f7d4c9b1e53c</code>
+                <code>0000000000000000000e6a19c3d2b7f5</code>
+                <code>0000000000000000000a9f2c7d1b3e5f</code>
+                <code>0000000000000000000a9f2c7d1b3e5f</code>
+                <code>0000000000000000000c4d91ab6e2f8b</code>
+                <code>00000000000000000002f7d4c9b1e53c</code>
+                <code>0000000000000000000e6a19c3d2b7f5</code>
+                <code>0000000000000000000a9f2c7d1b3e5f</code>
+                <code>0000000000000000000a9f2c7d1b3e5f</code>
+                <code>0000000000000000000c4d91ab6e2f8b</code>
+                <code>00000000000000000002f7d4c9b1e53c</code>
+                <code>0000000000000000000e6a19c3d2b7f5</code>
+          </li>
 
-        <!-- LIKES -->
-        <div class="blogpost-actions" data-post-id="{{ post.id }}">
-          <button
-            type="button"
-            class="like-button {% if post.liked_by_current_user %}liked{% endif %}"
-            data-post-id="{{ post.id }}"
-            aria-pressed="{{ 1 if post.liked_by_current_user else 0 }}"
-          >
-            <span class="like-icon">&hearts;</span>
-            <span class="like-label">
-              {% if post.liked_by_current_user %}
-                Je vindt dit leuk
-              {% else %}
-                Vind ik leuk
-              {% endif %}
-            </span>
-          </button>
-          <span class="like-count">{{ post.like_count or 0 }}</span>
-        </div>
-
+        </ul>
       </div>
-    {% endfor %}
-  {% else %}
-    <p class="text-center text-muted mt-4">
-      Nog geen posts.
-    </p>
-  {% endif %}
+    </aside>
 
+    <main class="col-lg-6 col-12 order-lg-2 order-1">
+
+      <div class="feed-list">
+        {% if posts %}
+          {% for post in posts %}
+            <div class="blogpost">
+
+              <div class="blogpost-title">
+                <p>
+                  @{{ post.username }}
+
+                  <span class="user-wallet-inline">
+
+                    <span class="user-wallet-label">Wallet</span>
+                    <code>{{ post.wallet_hash }}</code>
+                  </span>
+                </p>
+              </div>
+
+              <div class="blogpost-post">
+                {% if post.media_type == "image" %}
+
+                  <img
+                    src="{{ url_for('static', filename=post.media_path) }}"
+                    alt="Post image"
+                    loading="lazy"
+                  >
+                {% elif post.media_type == "video" %}
+
+                  <video controls preload="metadata">
+                    <source
+                      src="{{ url_for('static', filename=post.media_path) }}"
+                      type="video/mp4"
+                    >
+                  </video>
+                {% endif %}
+              </div>
+
+              <div class="blogpost-content">
+                <p>
+                  <strong>{{ post.username }}</strong>
+                  {% if post.caption %}
+                    {{ post.caption }}
+                  {% endif %}
+                </p>
+              </div>
+
+              <div class="blogpost-actions" data-post-id="{{ post.id }}">
+
+                <button
+                  type="button"
+                  class="like-button {% if post.liked_by_current_user %}liked{% endif %}"
+                  data-post-id="{{ post.id }}"
+                  aria-pressed="{{ 1 if post.liked_by_current_user else 0 }}"
+                >
+                  <span class="like-icon">&hearts;</span>
+                  <span class="like-label">
+                    {% if post.liked_by_current_user %}
+                      Je vindt dit leuk
+                    {% else %}
+                      Vind ik leuk
+                    {% endif %}
+                  </span>
+                </button>
+
+                <span class="like-count">{{ post.like_count or 0 }}</span>
+
+                {% if session.user_name == "admin" %}
+                  <form method="POST"
+                        action="{{ url_for('delete_post', post_id=post.id) }}"
+                        onsubmit="return confirm('Weet je zeker dat je deze post wilt verwijderen?');"
+                        style="display: inline;">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                  </form>
+                {% endif %}
+              </div>
+
+              <div class="post-hash">
+
+                <code>HASH 0000000000000000000a9f2c7d1b3e5f</code>
+              </div>
+
+              <div class="post-coin">
+
+                <img
+                  src="{{ url_for('static', filename='default/coin.jpg') }}"
+                  alt="ChainCoin"
+                  class="coin-image"
+                >
+
+                <input
+                  type="number"
+                  min="1"
+                  step="1"
+                  class="form-control form-control-sm coin-input"
+                  placeholder="Aantal"
+                >
+
+                <button type="button" class="btn btn-outline-dark btn-sm post-coin-button">
+                  Stuur ChainCoins
+                </button>
+              </div>
+
+            </div>
+          {% endfor %}
+        {% else %}
+
+          <p class="text-center text-muted mt-4">
+            Nog geen posts.
+          </p>
+        {% endif %}
+      </div>
+    </main>
+
+    <aside class="col-lg-3 col-12 order-lg-3 order-3">
+
+      <div class="network-panel">
+        <div class="network-panel-header">
+          <span class="hash-title">Blockchain Network</span>
+          <span class="hash-subtitle">clean view</span>
+        </div>
+
+        <img
+          src="{{ url_for('static', filename='default/block.jpg') }}"
+          alt="Blockchain network"
+          class="network-image"
+        >
+
+        <p class="network-caption">
+          Nodes, blocks, and trust in one visual.
+        </p>
+
+        <div class="network-section">
+          <div class="hash-panel-header">
+            <span class="hash-title">Validators</span>
+            <span class="hash-subtitle">active set</span>
+          </div>
+
+          <ul class="validator-list">
+            <li><span class="validator-name">Atlas-01</span><span class="validator-status">online</span></li>
+            <li><span class="validator-name">Kepler-07</span><span class="validator-status">online</span></li>
+            <li><span class="validator-name">Orion-12</span><span class="validator-status">syncing</span></li>
+          </ul>
+        </div>
+
+        <div class="network-section">
+          <div class="hash-panel-header">
+            <span class="hash-title">Nodes</span>
+            <span class="hash-subtitle">region mix</span>
+          </div>
+
+          <ul class="validator-list">
+            <li><span class="validator-name">EU-West-3</span><span class="validator-status">24 ms</span></li>
+            <li><span class="validator-name">US-East-1</span><span class="validator-status">41 ms</span></li>
+            <li><span class="validator-name">AP-South-2</span><span class="validator-status">88 ms</span></li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+  </div>
 </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  const likeButtons = document.querySelectorAll(".like-button");
-
-  likeButtons.forEach(function (button) {
-    button.addEventListener("click", async function () {
-      const postId = button.dataset.postId;
-      const parent = button.closest(".blogpost-actions");
-      const countEl = parent ? parent.querySelector(".like-count") : null;
-
-      try {
-        const response = await fetch(`/posts/${postId}/like`, { method: "POST" });
-        if (!response.ok) {
-          return;
-        }
-        const data = await response.json();
-        button.classList.toggle("liked", Boolean(data.liked));
-        button.setAttribute("aria-pressed", data.liked ? "1" : "0");
-        if (countEl && typeof data.like_count !== "undefined") {
-          countEl.textContent = data.like_count;
-        }
-        const label = button.querySelector(".like-label");
-        if (label) {
-          label.textContent = data.liked ? "Je vindt dit leuk" : "Vind ik leuk";
-        }
-      } catch (error) {
-        console.error("Like request failed", error);
-      }
-    });
-  });
-});
-</script>
+<script src="{{ url_for('static', filename='js/feed.js') }}"></script>
 
 {% include "includes/footer.html" %}
+
